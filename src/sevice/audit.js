@@ -15,3 +15,11 @@ export async function paymentHistoryList(params) {
     params,
   });
 }
+
+/**付款申请申批--审核(通过或不通过)*/
+export async function auditUpdate(params) {
+  return request('/apply/audit_update', {
+    method: 'GET',
+    params,
+  });
+}

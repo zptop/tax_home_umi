@@ -5,6 +5,8 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports['default'] = void 0;
 
+var _antd = require('antd');
+
 var _audit = require('../sevice/audit');
 
 function ownKeys(object, enumerableOnly) {
@@ -69,7 +71,11 @@ var _default = {
     //列表加载状态
     totalPage: 0,
     //总页数,
-    audit_history_list: [], //付款申请跟踪列表
+    audit_history_list: [],
+    //付款申请跟踪列表
+    selectedRowKeys: [],
+    //选中的申请单编号
+    remarkModal: false, //不通过原因弹框
   },
   reducers: {
     //loading状态
@@ -115,9 +121,19 @@ var _default = {
         totalPage: total,
       });
     },
+    setSelectedRowKeys: function setSelectedRowKeys(state, action) {
+      return _objectSpread({}, state, {
+        selectedRowKeys: action.payload,
+      });
+    },
+    setRemarkModal: function setRemarkModal(state, action) {
+      return _objectSpread({}, state, {
+        remarkModal: action.payload,
+      });
+    },
   },
   effects: {
-    //列表
+    //付款申请申批列表
     getPaymentRequestListModel:
       /*#__PURE__*/
       regeneratorRuntime.mark(function getPaymentRequestListModel(_ref, _ref2) {
@@ -186,7 +202,7 @@ var _default = {
         },
         getPaymentRequestListModel);
       }),
-    //付款申请跟踪
+    //付款申请跟踪列表
     paymentHistoryListModel:
       /*#__PURE__*/
       regeneratorRuntime.mark(function paymentHistoryListModel(_ref3, _ref4) {
@@ -242,6 +258,111 @@ var _default = {
           }
         },
         paymentHistoryListModel);
+      }),
+    //付款申请跟踪审核
+    handleAuditModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function handleAuditModel(_ref5, _ref6) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function handleAuditModel$(_context3) {
+          while (1) {
+            switch ((_context3.prev = _context3.next)) {
+              case 0:
+                value = _ref5.value;
+                (call = _ref6.call), (put = _ref6.put);
+                _context3.next = 4;
+                return call(_audit.auditUpdate, value);
+
+              case 4:
+                res = _context3.sent;
+
+                if (!(res.code == 0)) {
+                  _context3.next = 13;
+                  break;
+                }
+
+                _antd.message.success(res.msg || '操作成功');
+
+                _context3.next = 9;
+                return put({
+                  type: 'setSelectedRowKeys',
+                  payload: [],
+                });
+
+              case 9:
+                _context3.next = 11;
+                return put({
+                  type: 'setRemarkModal',
+                  payload: false,
+                });
+
+              case 11:
+                _context3.next = 14;
+                break;
+
+              case 13:
+                _antd.message.warning(res.msg || '操作失败');
+
+              case 14:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, handleAuditModel);
+      }),
+    //设置选中的行数
+    setSelectedRowKeysModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function setSelectedRowKeysModel(_ref7, _ref8) {
+        var value, call, put;
+        return regeneratorRuntime.wrap(function setSelectedRowKeysModel$(
+          _context4,
+        ) {
+          while (1) {
+            switch ((_context4.prev = _context4.next)) {
+              case 0:
+                value = _ref7.value;
+                (call = _ref8.call), (put = _ref8.put);
+                _context4.next = 4;
+                return put({
+                  type: 'setSelectedRowKeys',
+                  payload: value,
+                });
+
+              case 4:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        },
+        setSelectedRowKeysModel);
+      }),
+    //打开或关闭--审核不通过原因弹框
+    setRemarkModalModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function setRemarkModalModel(_ref9, _ref10) {
+        var value, call, put;
+        return regeneratorRuntime.wrap(function setRemarkModalModel$(
+          _context5,
+        ) {
+          while (1) {
+            switch ((_context5.prev = _context5.next)) {
+              case 0:
+                value = _ref9.value;
+                (call = _ref10.call), (put = _ref10.put);
+                _context5.next = 4;
+                return put({
+                  type: 'setRemarkModal',
+                  payload: value,
+                });
+
+              case 4:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        },
+        setRemarkModalModel);
       }),
   },
   subscriptions: {},

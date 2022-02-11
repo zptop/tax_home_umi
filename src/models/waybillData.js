@@ -205,7 +205,6 @@ export default {
       };
     },
     setPayObjInfo(state, action) {
-      console.log('action:', action);
       return {
         ...state,
         payObjInfo: action.payload,

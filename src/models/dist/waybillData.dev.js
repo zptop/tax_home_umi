@@ -275,7 +275,6 @@ var _default = {
       });
     },
     setPayObjInfo: function setPayObjInfo(state, action) {
-      console.log('action:', action);
       return _objectSpread({}, state, {
         payObjInfo: action.payload,
       });

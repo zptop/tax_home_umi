@@ -74,6 +74,19 @@ const routes = [
           },
         ],
       },
+      {
+        path: '/wallet',
+        routes: [
+          {
+            path: '/wallet/index',
+            component: './wallet/index',
+          },
+          {
+            path: '/wallet/coupon',
+            component: './wallet/coupon',
+          },
+        ],
+      },
     ],
   },
 ];

@@ -27,6 +27,8 @@ const mapStateToProps = state => {
     audit_special_list,
     loading,
     totalPage,
+    selectedRowKeys,
+    remarkModal,
   } = state[namespace];
   return {
     audit_wait_list,
@@ -34,6 +36,8 @@ const mapStateToProps = state => {
     audit_special_list,
     loading,
     totalPage,
+    selectedRowKeys,
+    remarkModal,
   };
 };
 
@@ -45,12 +49,31 @@ const mapDispatchToProps = dispatch => {
         value,
       });
     },
+    handleAuditFn: value => {
+      dispatch({
+        type: namespace + '/handleAudModel',
+        value,
+      });
+    },
+    setSelectedRowKeysFn: value => {
+      dispatch({
+        type: namespace + '/setSelectedRowKeysModel',
+        value,
+      });
+    },
+    setRemarkModalFn: value => {
+      dispatch({
+        type: namespace + '/setRemarkModalModel',
+        value,
+      });
+    },
   };
 };
 
 const AuditList = props => {
-  let { loading, totalPage, flag } = props;
+  let { loading, totalPage, flag, selectedRowKeys, remarkModal } = props;
   const [form] = Form.useForm();
+  const [remarkform] = Form.useForm();
   const [waybillNo, setWaybillNo] = useState('');
   const dataRef = useRef();
   const [placeholderInput, setPlaceholderInput] = useState('请输入运单编号');
@@ -60,7 +83,6 @@ const AuditList = props => {
     pageSize: 10,
     searchName: 'waybill_no',
     isDetailDrawer: false,
-    selectedRowKeys: [], //选中的申请单编号
     selectedRows: [], //选中的行
   });
 
@@ -179,23 +201,54 @@ const AuditList = props => {
   };
 
   //审核通过
-  const handleAudit1 = () => {};
-
-  //审核不通过
-  const handleAudit2 = () => {};
-
-  //多选
-  const onSelectChange = (selectedRowKeys, selectedRows) => {
-    setObjState({
-      ...objState,
-      selectedRowKeys,
-      selectedRows,
+  const handleAudit1 = () => {
+    if (selectedRowKeys.length == 0) {
+      message.warning('请选择至少一条运单');
+      return;
+    }
+    props.handleAuditFn({
+      applypay_no: selectedRowKeys,
+      audit_flag: 1,
     });
   };
+
+  //审核不通过
+  const handleAudit2 = () => {
+    if (selectedRowKeys.length == 0) {
+      message.warning('请选择至少一条运单');
+      return;
+    } else if (selectedRowKeys.length == 1) {
+    } else {
+      props.handleAuditFn({
+        applypay_no: selectedRowKeys,
+        audit_flag: 2,
+      });
+    }
+  };
+
+  //多选
+  const onSelectChange = (selectedRowS, selectedRows) => {
+    props.setSelectedRowKeysFn(selectedRowS);
+  };
   const rowSelection = {
-    selectedRowKeys: objState.selectedRowKeys,
+    selectedRowKeys,
     onChange: onSelectChange,
   };
+
+  //提交审核不通过原因
+  const remarkFinish = fieldsValue => {
+    const values = {
+      ...fieldsValue,
+      applypay_no: selectedRowKeys,
+      audit_flag: 2,
+    };
+    props.handleAuditFn(values);
+  };
+  const remarkCancel = () => {
+    props.setRemarkModalFn(false);
+    props.setSelectedRowKeysFn([]);
+  };
+
   useEffect(() => {
     let params = { page: objState.pageNum, num: objState.pageSize, flag };
     let data = { ...params, ...dataRef.current };
@@ -359,6 +412,40 @@ const AuditList = props => {
       >
         <Details waybill_no={waybillNo} />
       </Drawer>
+
+      {/*审核不通过原因*/}
+      <Modal
+        visible={remarkModal}
+        title="备注"
+        onCancel={remarkCancel}
+        footer={null}
+      >
+        <Form
+          form={remarkform}
+          onFinish={remarkFinish}
+          initialValues={{
+            remark: '',
+          }}
+        >
+          <Form.Item
+            name="remark"
+            rules={[
+              {
+                required: true,
+                message: '审核不通过原因未输入',
+              },
+            ]}
+          >
+            <Input.TextArea placeholder="请输入审核不通过原因" />
+          </Form.Item>
+          <Button htmlType="button" onClick={remarkCancel}>
+            关闭
+          </Button>
+          <Button type="primary" htmlType="submit">
+            确定
+          </Button>
+        </Form>
+      </Modal>
     </>
   );
 };

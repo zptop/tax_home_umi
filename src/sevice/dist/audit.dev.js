@@ -5,6 +5,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.paymentRequestList = paymentRequestList;
 exports.paymentHistoryList = paymentHistoryList;
+exports.auditUpdate = auditUpdate;
 
 var _request = _interopRequireDefault(require('../util/request'));
 
@@ -51,6 +52,28 @@ function paymentHistoryList(params) {
         case 1:
         case 'end':
           return _context2.stop();
+      }
+    }
+  });
+}
+/**付款申请申批--审核(通过或不通过)*/
+
+function auditUpdate(params) {
+  return regeneratorRuntime.async(function auditUpdate$(_context3) {
+    while (1) {
+      switch ((_context3.prev = _context3.next)) {
+        case 0:
+          return _context3.abrupt(
+            'return',
+            (0, _request['default'])('/apply/audit_update', {
+              method: 'GET',
+              params: params,
+            }),
+          );
+
+        case 1:
+        case 'end':
+          return _context3.stop();
       }
     }
   });
