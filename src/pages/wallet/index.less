@@ -1,0 +1,79 @@
+.wallet_box {
+  padding: 26px;
+  -webkit-box-shadow: 0 0 10px 0 hsla(0, 0%, 53.3%, 0.14);
+  box-shadow: 0 0 10px 0 hsla(0, 0%, 53.3%, 0.14);
+
+  &:nth-child(1) {
+    margin-right: 15px;
+  }
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+    height: 54px;
+    padding: 0 0 22px 0;
+
+    .left {
+      span {
+        &.help {
+          color: #00b0b5;
+          padding: 0 0 0 50px;
+        }
+      }
+    }
+
+    .right {
+    }
+  }
+
+  .wallet_content {
+    display: flex;
+    justify-content: space-around;
+
+    .item {
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      width: 46%;
+      height: 108px;
+      background: #fff;
+      -webkit-box-shadow: 0 0 10px 0 hsla(0, 0%, 53.3%, 0.14);
+      box-shadow: 0 0 10px 0 hsla(0, 0%, 53.3%, 0.14);
+      border-radius: 4px;
+      margin: 0 10px;
+      overflow: hidden;
+
+      img {
+        padding: 0 6px 0 0;
+      }
+
+      div {
+        img {
+          position: relative;
+          left: 5px;
+          top: 0px;
+        }
+      }
+    }
+  }
+}
+
+.wallet_list {
+  padding-top: 50px;
+  :global {
+    .ant-form-horizontal {
+      display: flex;
+      width: 100%;
+
+      .ant-col-4 {
+        button {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}
