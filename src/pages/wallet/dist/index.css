@@ -45,13 +45,11 @@
   left: 5px;
   top: 0px;
 }
-.wallet_list {
-  padding-top: 50px;
-}
-.wallet_list :global .ant-form-horizontal {
+.wallet_search_form {
   display: flex;
   width: 100%;
+  padding-top: 50px;
 }
-.wallet_list :global .ant-form-horizontal .ant-col-4 button {
+.wallet_search_form .ant-col-4 button {
   margin-right: 8px;
 }

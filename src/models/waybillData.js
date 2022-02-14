@@ -477,6 +477,7 @@ export default {
     },
 
     //确认电子合同
+    //yield在回调函数中使用时，要在store.runSaga中使用
     *sureContractModel({ value }, { call, put }) {
       let store = getDvaApp()._store;
       confirm({

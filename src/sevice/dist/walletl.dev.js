@@ -32,16 +32,16 @@ function getWallet(params) {
       }
     }
   });
-}
+} //通用钱包交易记录,开票资金交易记录
 
-function getWalletList(params) {
+function getWalletList(params, url) {
   return regeneratorRuntime.async(function getWalletList$(_context2) {
     while (1) {
       switch ((_context2.prev = _context2.next)) {
         case 0:
           return _context2.abrupt(
             'return',
-            (0, _request['default'])('/wallet/get_list', {
+            (0, _request['default'])(url, {
               method: 'GET',
               params: params,
             }),

@@ -8,8 +8,9 @@ export async function getWallet(params) {
   });
 }
 
-export async function getWalletList(params) {
-  return request('/wallet/get_list', {
+//通用钱包交易记录,开票资金交易记录
+export async function getWalletList(params, url) {
+  return request(url, {
     method: 'GET',
     params,
   });

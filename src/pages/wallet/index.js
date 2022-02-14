@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Row,
   Col,
@@ -12,7 +12,9 @@ import {
   Modal,
   Tooltip,
   Drawer,
+  Tabs,
 } from 'antd';
+const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 import { createFromIconfontCN } from '@ant-design/icons';
 const IconFont = createFromIconfontCN({
@@ -20,23 +22,42 @@ const IconFont = createFromIconfontCN({
 });
 import { connect } from 'dva';
 import styles from './index.less';
-const namespace = 'wallet';
+import WalletList from './wallet-list';
 const { confirm } = Modal;
-
-const mapStateToProps = state => {};
-
-const mapDispatchToProps = dispatch => {};
-
+const namespace = 'wallet';
+const mapStateToProps = state => {
+  let { wallet } = state[namespace];
+  return {
+    wallet,
+  };
+};
+const mapDispatchToProps = dispatch => {
+  return {
+    getWalletFn: value => {
+      dispatch({
+        type: namespace + '/getWalletModel',
+        value,
+      });
+    },
+    getWalletListFn: value => {
+      dispatch({
+        type: namespace + '/getWalletListModel',
+        value,
+      });
+    },
+  };
+};
 const Wallet = props => {
+  const [curTabKey, setCurTabKey] = useState('1');
+  const dataRef = useRef('');
+  const changeTabs = activeKey => {
+    setCurTabKey(activeKey);
+  };
   const [form] = Form.useForm();
   //查询条件
   const [objState, setObjState] = useState({
-    pageNum: 1,
-    pageSize: 10,
-    searchName: 'waybill_no',
-    apply_time_start: '',
-    apply_time_end: '',
-    isDetailDrawer: false,
+    start: '',
+    end: '',
   });
   //选择日期
   const rangeConfig = {
@@ -48,23 +69,33 @@ const Wallet = props => {
       },
     ],
   };
-  //选择日期
   const checkDate = (date, dateStrings) => {
     setObjState({
       ...objState,
-      apply_time_start: dateStrings[0],
-      apply_time_end: dateStrings[1],
+      start: dateStrings[0],
+      end: dateStrings[1],
     });
   };
-  const onFinish = () => {};
+
+  const onFinish = values => {
+    values = {
+      ...values,
+      ...objState,
+    };
+    dataRef.current = values;
+    console.log('dataRef.current:', dataRef.current);
+  };
   //重置
   const handleSearchReset = () => {
     form.resetFields();
-    props.getPaymentHistoryListFn({
-      page: objState.pageNum,
-      num: objState.pageSize,
+    setObjState({
+      ...objState,
+      start: '',
+      end: '',
     });
+    dataRef.current = '';
   };
+
   return (
     <>
       <Row>
@@ -138,33 +169,46 @@ const Wallet = props => {
           </div>
         </Col>
       </Row>
-      <Row className={styles.wallet_list}>
-        <Form
-          form={form}
-          onFinish={onFinish}
-          initialValues={{
-            waybill_no: '',
-            applypay_status: '',
-            apply_time_start: '',
-            apply_time_end: '',
-          }}
-        >
-          <Col span={6}>
-            <Form.Item {...rangeConfig} label="交易时间">
-              <RangePicker onChange={checkDate} />
-            </Form.Item>
-          </Col>
-          <Col span={4}>
-            <Button type="primary" htmlType="submit">
-              搜索
-            </Button>
-            <Button htmlType="button" onClick={handleSearchReset}>
-              重置
-            </Button>
-            <Button type="primary">导出</Button>
-          </Col>
-        </Form>
-      </Row>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        initialValues={{
+          start: '',
+          end: '',
+        }}
+        className={styles.wallet_search_form}
+      >
+        <Col span={6}>
+          <Form.Item {...rangeConfig} label="交易时间">
+            <RangePicker onChange={checkDate} />
+          </Form.Item>
+        </Col>
+        <Col span={4}>
+          <Button type="primary" htmlType="submit">
+            搜索
+          </Button>
+          <Button htmlType="button" onClick={handleSearchReset}>
+            重置
+          </Button>
+          <Button type="primary">导出</Button>
+        </Col>
+      </Form>
+      <Tabs defaultActiveKey="1" onChange={changeTabs}>
+        <TabPane tab="通用钱包交易记录" key="1">
+          {curTabKey === '1' ? (
+            <WalletList flag="list" data={dataRef.current} />
+          ) : (
+            <div></div>
+          )}
+        </TabPane>
+        <TabPane tab="开票资金交易记录" key="2">
+          {curTabKey === '2' ? (
+            <WalletList flag="tax_list" data={dataRef.current} />
+          ) : (
+            <div></div>
+          )}
+        </TabPane>
+      </Tabs>
     </>
   );
 };

@@ -1033,6 +1033,7 @@ var _default = {
         }, getContractModel);
       }),
     //确认电子合同
+    //yield在回调函数中使用时，要在store.runSaga中使用
     sureContractModel:
       /*#__PURE__*/
       regeneratorRuntime.mark(function sureContractModel(_ref31, _ref32) {
