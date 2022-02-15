@@ -15,8 +15,9 @@ import {
   Drawer,
 } from 'antd';
 import { formatDateYMDHMS, accDiv } from '../../util/tools';
-
+import config from '../../../config/config';
 import { connect } from 'dva';
+import qs from 'qs';
 import styles from './index.less';
 const namespace = 'wallet';
 const { confirm } = Modal;
@@ -56,11 +57,26 @@ const WalletList = props => {
 
   //父组件调用子组件的方法
   useImperativeHandle(props.onRef, () => {
+    console.log('props.onRef:', props.onRef);
     return {
-      func: values => {
+      getList: values => {
         let params = { page: objState.pageNum, num: objState.pageSize, flag };
         params = { ...params, ...values };
         props.getWalletListFn(params);
+      },
+      exportFn: values => {
+        let { start, end } = values;
+        let params = {
+          start,
+          end,
+        };
+        const baseUrl =
+          process.env.NODE_ENV === 'development'
+            ? config.baseUrl.dev
+            : config.baseUrl.pro;
+        const url =
+          flag == 'list' ? '/wallet/outexport?' : '/wallet/outtaxexport?';
+        window.open(baseUrl + url + qs.stringify(params));
       },
     };
   });
@@ -90,6 +106,7 @@ const WalletList = props => {
   };
 
   useEffect(() => {
+    console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
     let params = { page: objState.pageNum, num: objState.pageSize, flag };
     params = { ...params, ...data };
     props.getWalletListFn(params);

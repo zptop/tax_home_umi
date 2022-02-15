@@ -90,7 +90,7 @@ const Wallet = props => {
       ...otherObjState,
     };
     dataRef.current = values;
-    ChildRef.current.func(values);
+    ChildRef.current.getList(values);
   };
   //重置
   const handleSearchReset = () => {
@@ -102,7 +102,12 @@ const Wallet = props => {
       timeRest: new Date(),
     });
     dataRef.current = '';
-    ChildRef.current.func({});
+    ChildRef.current.getList({});
+  };
+
+  //导出
+  const exportParentFn = () => {
+    ChildRef.current.exportFn(objState);
   };
 
   //充值帮助
@@ -245,7 +250,9 @@ const Wallet = props => {
           <Button htmlType="button" onClick={handleSearchReset}>
             重置
           </Button>
-          <Button type="primary">导出</Button>
+          <Button type="primary" onClick={exportParentFn}>
+            导出
+          </Button>
         </Col>
       </Form>
       <Tabs defaultActiveKey="1" onChange={changeTabs}>
