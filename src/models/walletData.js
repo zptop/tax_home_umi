@@ -1,4 +1,4 @@
-import { getWallet, getWalletList } from '../sevice/walletl';
+import { getWallet, getWalletList, taxFundRecharge } from '../sevice/walletl';
 export default {
   namespace: 'wallet',
   state: {
@@ -72,6 +72,27 @@ export default {
       } else {
         message.warning(res.msg);
       }
+    },
+
+    //转入开票资金-充值
+    *taxFundRechargeModel({ value }, { call, put }) {
+      const res = yield call({ taxFundRecharge, value });
+      if (res.code == 0) {
+        message.success(res.msg || '恭喜您，充值成功！');
+      } else {
+        message.warning(res.msg || '系统错误');
+      }
+    },
+  },
+  subscriptions: {
+    setup({ dispatch, history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname == '/wallet/index') {
+          dispatch({
+            type: 'getWalletModel',
+          });
+        }
+      });
     },
   },
 };

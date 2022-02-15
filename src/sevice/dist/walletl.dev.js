@@ -5,6 +5,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.getWallet = getWallet;
 exports.getWalletList = getWalletList;
+exports.taxFundRecharge = taxFundRecharge;
 
 var _request = _interopRequireDefault(require('../util/request'));
 
@@ -50,6 +51,27 @@ function getWalletList(params, url) {
         case 1:
         case 'end':
           return _context2.stop();
+      }
+    }
+  });
+} //转入开票资金，充值
+
+function taxFundRecharge(params) {
+  return regeneratorRuntime.async(function taxFundRecharge$(_context3) {
+    while (1) {
+      switch ((_context3.prev = _context3.next)) {
+        case 0:
+          return _context3.abrupt(
+            'return',
+            (0, _request['default'])('/wallet/tax_fund_recharge', {
+              method: 'GET',
+              params: params,
+            }),
+          );
+
+        case 1:
+        case 'end':
+          return _context3.stop();
       }
     }
   });

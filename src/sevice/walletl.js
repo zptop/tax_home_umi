@@ -15,3 +15,11 @@ export async function getWalletList(params, url) {
     params,
   });
 }
+
+//转入开票资金，充值
+export async function taxFundRecharge(params) {
+  return request('/wallet/tax_fund_recharge', {
+    method: 'GET',
+    params,
+  });
+}

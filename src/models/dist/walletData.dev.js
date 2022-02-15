@@ -208,6 +208,57 @@ var _default = {
           }
         }, getWalletListModel);
       }),
+    //转入开票资金-充值
+    taxFundRechargeModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function taxFundRechargeModel(_ref5, _ref6) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function taxFundRechargeModel$(
+          _context3,
+        ) {
+          while (1) {
+            switch ((_context3.prev = _context3.next)) {
+              case 0:
+                value = _ref5.value;
+                (call = _ref6.call), (put = _ref6.put);
+                _context3.next = 4;
+                return call({
+                  taxFundRecharge: _walletl.taxFundRecharge,
+                  value: value,
+                });
+
+              case 4:
+                res = _context3.sent;
+
+                if (res.code == 0) {
+                  message.success(res.msg || '恭喜您，充值成功！');
+                } else {
+                  message.warning(res.msg || '系统错误');
+                }
+
+              case 6:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        },
+        taxFundRechargeModel);
+      }),
+  },
+  subscriptions: {
+    setup: function setup(_ref7) {
+      var dispatch = _ref7.dispatch,
+        history = _ref7.history;
+      return history.listen(function(_ref8) {
+        var pathname = _ref8.pathname;
+
+        if (pathname == '/wallet/index') {
+          dispatch({
+            type: 'getWalletModel',
+          });
+        }
+      });
+    },
   },
 };
 exports['default'] = _default;

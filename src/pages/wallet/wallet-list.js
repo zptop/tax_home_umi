@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
+import { withRouter } from 'react-router-dom';
 import {
   Row,
   Col,
@@ -52,6 +53,18 @@ const WalletList = props => {
     pageNum: 1,
     pageSize: 10,
   });
+
+  //父组件调用子组件的方法
+  useImperativeHandle(props.onRef, () => {
+    return {
+      func: values => {
+        let params = { page: objState.pageNum, num: objState.pageSize, flag };
+        params = { ...params, ...values };
+        props.getWalletListFn(params);
+      },
+    };
+  });
+
   //pageSize 变化的回调
   const onShowSizeChange = (current, pageSize) => {
     setObjState({
@@ -80,7 +93,7 @@ const WalletList = props => {
     let params = { page: objState.pageNum, num: objState.pageSize, flag };
     params = { ...params, ...data };
     props.getWalletListFn(params);
-  }, [data]);
+  }, [flag]);
 
   const columns1 = [
     {

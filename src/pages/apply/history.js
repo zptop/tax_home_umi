@@ -15,7 +15,6 @@ import {
 } from 'antd';
 const { confirm } = Modal;
 const { RangePicker } = DatePicker;
-import { ExclamationCircleFilled } from '@ant-design/icons';
 import {
   formatDateYMD,
   formatDateYMDHMS,
@@ -61,6 +60,7 @@ const ApplyHistory = props => {
     apply_time_start: '',
     apply_time_end: '',
     isDetailDrawer: false,
+    timeRest: new Date(),
   });
 
   //选择单号
@@ -149,6 +149,14 @@ const ApplyHistory = props => {
   //重置
   const handleSearchReset = () => {
     form.resetFields();
+    setObjState({
+      ...objState,
+      searchName: 'waybill_no',
+      apply_time_start: '',
+      apply_time_end: '',
+      isDetailDrawer: false,
+      timeRest: new Date(),
+    });
     props.getPaymentHistoryListFn({
       page: objState.pageNum,
       num: objState.pageSize,
@@ -333,7 +341,7 @@ const ApplyHistory = props => {
           </Col>
           <Col span={6}>
             <Form.Item {...rangeConfig} label="申请时间">
-              <RangePicker onChange={checkDate} />
+              <RangePicker key={objState.timeRest} onChange={checkDate} />
             </Form.Item>
           </Col>
           <Col span={3}>
