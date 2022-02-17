@@ -95,7 +95,7 @@ var _default = {
   state: {
     waybillList: [],
     totalPage: 0,
-    //总页数
+    //总条数
     total_wait_amount: 0,
     //待付运输劳务费
     total_labour_amount: 0,
@@ -1033,7 +1033,7 @@ var _default = {
         }, getContractModel);
       }),
     //确认电子合同
-    //yield在回调函数中使用时，要在store.runSaga中使用
+    //yield call在回调函数中使用时，要在store.runSaga中使用
     sureContractModel:
       /*#__PURE__*/
       regeneratorRuntime.mark(function sureContractModel(_ref31, _ref32) {
@@ -1442,25 +1442,24 @@ var _default = {
                 console.log('res:', res);
 
                 if (!(res.code == 0)) {
-                  _context25.next = 12;
+                  _context25.next = 11;
                   break;
                 }
 
-                console.log('1111');
-                _context25.next = 10;
+                _context25.next = 9;
                 return put({
                   type: '/setPayObjInfo',
                   payload: res.data,
                 });
 
-              case 10:
-                _context25.next = 13;
+              case 9:
+                _context25.next = 12;
                 break;
 
-              case 12:
+              case 11:
                 _antd.message.error(res.msg || '系统错误');
 
-              case 13:
+              case 12:
               case 'end':
                 return _context25.stop();
             }

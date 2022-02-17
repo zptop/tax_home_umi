@@ -25,13 +25,13 @@ import {
   getSmsCodeFromPay,
   getInfoPersonFromPay,
 } from '../sevice/waybill';
-import { formatDateYMD, accMul, accDiv, timeCutdown } from '../util/tools';
+import { timeCutdown } from '../util/tools';
 import { history, getDvaApp } from 'umi';
 export default {
   namespace: 'waybill',
   state: {
     waybillList: [],
-    totalPage: 0, //总页数
+    totalPage: 0, //总条数
     total_wait_amount: 0, //待付运输劳务费
     total_labour_amount: 0, //总运输劳务费
     loading: false, //列表加载状态
@@ -477,7 +477,7 @@ export default {
     },
 
     //确认电子合同
-    //yield在回调函数中使用时，要在store.runSaga中使用
+    //yield call在回调函数中使用时，要在store.runSaga中使用
     *sureContractModel({ value }, { call, put }) {
       let store = getDvaApp()._store;
       confirm({
@@ -613,7 +613,6 @@ export default {
       const res = yield call(getInfoPersonFromPay, value);
       console.log('res:', res);
       if (res.code == 0) {
-        console.log('1111');
         yield put({
           type: '/setPayObjInfo',
           payload: res.data,

@@ -1,4 +1,10 @@
-const siderMenu = [
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true,
+});
+exports['default'] = void 0;
+var siderMenu = [
   {
     key: '/car/index',
     icon: 'iconcheliangyundan',
@@ -92,5 +98,5 @@ const siderMenu = [
     ],
   },
 ];
-
-export default siderMenu;
+var _default = siderMenu;
+exports['default'] = _default;

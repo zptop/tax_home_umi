@@ -1,12 +1,20 @@
-import { getWallet, getWalletList, taxFundRecharge } from '../sevice/walletl';
+import {
+  getWallet,
+  getWalletList,
+  taxFundRecharge,
+  getCouponList,
+} from '../sevice/walletl';
 export default {
   namespace: 'wallet',
   state: {
     wallet: null, //通用钱包,税金现金余额
     loading: false, //列表加载状态
-    totalPage: 0, //总页数,
+    totalPage: 0, //总条数,
     wallet_list: [], //通用钱包交易记录列表
     wallet_tax_list: [], //开票资金交易记录列表
+    couponList: [], //优惠券列表
+    couponCash: null, //优惠券余额
+    isExpired: false,
   },
   //同步方法
   reducers: {
@@ -49,6 +57,28 @@ export default {
         totalPage: total,
       };
     },
+
+    //设置优惠券列表
+    setCouponList(state, action) {
+      return {
+        ...state,
+        couponList: action.payload,
+      };
+    },
+
+    //设置优惠券余额
+    setCouponCash(state, action) {
+      return {
+        ...state,
+        couponCash: action.payload,
+      };
+    },
+    setIsExpired(state, action) {
+      return {
+        ...state,
+        isExpired: action.payload,
+      };
+    },
   },
   //异步方法
   effects: {
@@ -83,6 +113,29 @@ export default {
         message.warning(res.msg || '系统错误');
       }
     },
+
+    //获取优惠券列表
+    *getCouponListModel({ value }, { call, put }) {
+      const res = yield call(getCouponList, value);
+      if (res.code == 0) {
+        if (res.data && res.data.length) {
+          yield put({ type: 'setCouponList', payload: res.data });
+          const cashObj = null;
+          for (var i = 0; i < res.data.length; i++) {
+            if (res.data[i].is_valid == 0) continue;
+            cashObj += Number(
+              (res.data[i].real_amount * res.data[i].coupon_cnt) / 100,
+            );
+            if (res.data[i].will_expire == 1) {
+              yield put({ type: 'setIsExpired', payload: true });
+            }
+          }
+          yield put({ type: 'setCouponCash', payload: Number(cashObj) });
+        }
+      } else {
+        message.warning(res.msg || '系统错误');
+      }
+    },
   },
   subscriptions: {
     setup({ dispatch, history }) {
@@ -91,6 +144,9 @@ export default {
           dispatch({
             type: 'getWalletModel',
           });
+        }
+        if (pathname == '/wallet/coupon') {
+          dispatch({ type: 'getCouponListModel' });
         }
       });
     },

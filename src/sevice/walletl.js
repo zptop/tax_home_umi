@@ -23,3 +23,11 @@ export async function taxFundRecharge(params) {
     params,
   });
 }
+
+//优惠券列表
+export async function getCouponList(params) {
+  return request('/wallet/get_coupon', {
+    method: 'GET',
+    params,
+  });
+}

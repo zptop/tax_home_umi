@@ -24,7 +24,6 @@ const IconFont = createFromIconfontCN({
 import { connect } from 'dva';
 import styles from './index.less';
 import WalletList from './wallet-list';
-const { confirm } = Modal;
 const namespace = 'wallet';
 const mapStateToProps = state => {
   let { wallet } = state[namespace];
@@ -47,7 +46,10 @@ const mapDispatchToProps = dispatch => {
       });
     },
     taxFundRechargeFn: value => {
-      dispatch({ type: namespace + '/taxFundRechargeModel', value });
+      dispatch({
+        type: namespace + '/taxFundRechargeModel',
+        value,
+      });
     },
   };
 };

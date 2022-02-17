@@ -7,6 +7,10 @@ exports['default'] = void 0;
 
 var _walletl = require('../sevice/walletl');
 
+function _readOnlyError(name) {
+  throw new Error('"' + name + '" is read-only');
+}
+
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
   if (Object.getOwnPropertySymbols) {
@@ -64,10 +68,16 @@ var _default = {
     loading: false,
     //列表加载状态
     totalPage: 0,
-    //总页数,
+    //总条数,
     wallet_list: [],
     //通用钱包交易记录列表
-    wallet_tax_list: [], //开票资金交易记录列表
+    wallet_tax_list: [],
+    //开票资金交易记录列表
+    couponList: [],
+    //优惠券列表
+    couponCash: null,
+    //优惠券余额
+    isExpired: false,
   },
   //同步方法
   reducers: {
@@ -101,6 +111,23 @@ var _default = {
       return _objectSpread({}, state, {
         wallet_tax_list: data,
         totalPage: total,
+      });
+    },
+    //设置优惠券列表
+    setCouponList: function setCouponList(state, action) {
+      return _objectSpread({}, state, {
+        couponList: action.payload,
+      });
+    },
+    //设置优惠券余额
+    setCouponCash: function setCouponCash(state, action) {
+      return _objectSpread({}, state, {
+        couponCash: action.payload,
+      });
+    },
+    setIsExpired: function setIsExpired(state, action) {
+      return _objectSpread({}, state, {
+        isExpired: action.payload,
       });
     },
   },
@@ -244,17 +271,117 @@ var _default = {
         },
         taxFundRechargeModel);
       }),
+    //获取优惠券列表
+    getCouponListModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function getCouponListModel(_ref7, _ref8) {
+        var value, call, put, res, cashObj, i;
+        return regeneratorRuntime.wrap(function getCouponListModel$(_context4) {
+          while (1) {
+            switch ((_context4.prev = _context4.next)) {
+              case 0:
+                value = _ref7.value;
+                (call = _ref8.call), (put = _ref8.put);
+                _context4.next = 4;
+                return call(_walletl.getCouponList, value);
+
+              case 4:
+                res = _context4.sent;
+
+                if (!(res.code == 0)) {
+                  _context4.next = 25;
+                  break;
+                }
+
+                if (!(res.data && res.data.length)) {
+                  _context4.next = 23;
+                  break;
+                }
+
+                _context4.next = 9;
+                return put({
+                  type: 'setCouponList',
+                  payload: res.data,
+                });
+
+              case 9:
+                cashObj = null;
+                i = 0;
+
+              case 11:
+                if (!(i < res.data.length)) {
+                  _context4.next = 21;
+                  break;
+                }
+
+                if (!(res.data[i].is_valid == 0)) {
+                  _context4.next = 14;
+                  break;
+                }
+
+                return _context4.abrupt('continue', 18);
+
+              case 14:
+                cashObj +=
+                  (_readOnlyError('cashObj'),
+                  Number(
+                    (res.data[i].real_amount * res.data[i].coupon_cnt) / 100,
+                  ));
+
+                if (!(res.data[i].will_expire == 1)) {
+                  _context4.next = 18;
+                  break;
+                }
+
+                _context4.next = 18;
+                return put({
+                  type: 'setIsExpired',
+                  payload: true,
+                });
+
+              case 18:
+                i++;
+                _context4.next = 11;
+                break;
+
+              case 21:
+                _context4.next = 23;
+                return put({
+                  type: 'setCouponCash',
+                  payload: Number(cashObj),
+                });
+
+              case 23:
+                _context4.next = 26;
+                break;
+
+              case 25:
+                message.warning(res.msg || '系统错误');
+
+              case 26:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        }, getCouponListModel);
+      }),
   },
   subscriptions: {
-    setup: function setup(_ref7) {
-      var dispatch = _ref7.dispatch,
-        history = _ref7.history;
-      return history.listen(function(_ref8) {
-        var pathname = _ref8.pathname;
+    setup: function setup(_ref9) {
+      var dispatch = _ref9.dispatch,
+        history = _ref9.history;
+      return history.listen(function(_ref10) {
+        var pathname = _ref10.pathname;
 
         if (pathname == '/wallet/index') {
           dispatch({
             type: 'getWalletModel',
+          });
+        }
+
+        if (pathname == '/wallet/coupon') {
+          dispatch({
+            type: 'getCouponListModel',
           });
         }
       });

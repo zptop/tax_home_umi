@@ -20,12 +20,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   RetweetOutlined,
   DownOutlined,
-  DownloadOutlined,
   ExclamationCircleFilled,
-  QuestionCircleOutlined,
-  CloseCircleOutlined,
-  WarningOutlined,
-  CloudSyncOutlined,
 } from '@ant-design/icons';
 import {
   formatDateYMD,
@@ -535,24 +530,6 @@ const WaybillIndex = props => {
     ],
   };
 
-  //选择运单编号，车牌号...
-  const numSelector = (
-    <Select defaultValue="0" style={{ width: 120 }} onChange={selectNum}>
-      <Select.Option value="0">运单编号</Select.Option>
-      <Select.Option value="1">
-        {transportType == '1' ? '车牌号' : '船名'}
-      </Select.Option>
-      <Select.Option value="2">承运人身份证</Select.Option>
-      <Select.Option value="3">发票号码</Select.Option>
-      <Select.Option value="4">客户订单号</Select.Option>
-      <Select.Option value="5">承运人姓名</Select.Option>
-      {transportType == '1' && (
-        <Select.Option value="6">司机姓名</Select.Option>
-      )}
-      <Select.Option value="7">客户销项发票单号</Select.Option>
-    </Select>
-  );
-
   //搜索
   const onFinish = values => {
     let {
@@ -662,7 +639,6 @@ const WaybillIndex = props => {
   const changeMenu = (waybill_no, waybill_candelete, e) => {
     switch (Number(e.key)) {
       case 1:
-        console.log('跳转到付款页面');
         history.push({
           pathname: payPath,
           query: {
@@ -1067,7 +1043,6 @@ const WaybillIndex = props => {
     {
       title: '撮合服务费(元)',
       width: 100,
-      dataIndex: 'svr_fee',
       render: (text, record, index) => {
         return <div>{accDiv(record.svr_fee, 100).toFixed(2)}</div>;
       },
@@ -1126,12 +1101,30 @@ const WaybillIndex = props => {
         }}
       >
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-          <Col className="gutter-row" span={4}>
+          <Col span={4} style={{ display: 'flex', alignItems: 'flex-start' }}>
+            <Select
+              defaultValue="0"
+              style={{ width: 120 }}
+              onChange={selectNum}
+            >
+              <Select.Option value="0">运单编号</Select.Option>
+              <Select.Option value="1">
+                {transportType == '1' ? '车牌号' : '船名'}
+              </Select.Option>
+              <Select.Option value="2">承运人身份证</Select.Option>
+              <Select.Option value="3">发票号码</Select.Option>
+              <Select.Option value="4">客户订单号</Select.Option>
+              <Select.Option value="5">承运人姓名</Select.Option>
+              {transportType == '1' && (
+                <Select.Option value="6">司机姓名</Select.Option>
+              )}
+              <Select.Option value="7">客户销项发票单号</Select.Option>
+            </Select>
             <Form.Item name={objState.searchName}>
-              <Input addonBefore={numSelector} style={{ width: '100%' }} />
+              <Input />
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={5}>
+          <Col span={5}>
             <Select
               defaultValue="0"
               style={{ width: 100 }}
@@ -1149,7 +1142,7 @@ const WaybillIndex = props => {
               <RangePicker key={chooseTime.timeRest} onChange={checkDate} />
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="carrier_status">
               <Select>
                 <Select.Option value="">是否指定承运人</Select.Option>
@@ -1159,7 +1152,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="invoice_status">
               <Select>
                 <Select.Option value="">选择开票状态</Select.Option>
@@ -1170,7 +1163,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="business_flag_7">
               <Select>
                 <Select.Option value="">选择资料上传状态</Select.Option>
@@ -1180,7 +1173,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={2.5}>
+          <Col span={2.5}>
             <Form.Item name="waybill_status">
               <Select>
                 <Select.Option value="">运单审核状态</Select.Option>
@@ -1192,7 +1185,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="carrier_audit_status">
               <Select>
                 <Select.Option value="">承运人审核状态</Select.Option>
@@ -1204,7 +1197,7 @@ const WaybillIndex = props => {
             </Form.Item>
           </Col>
           {transportType == '1' && (
-            <Col className="gutter-row" span={3}>
+            <Col span={3}>
               <Form.Item name="driver_audit_status">
                 <Select>
                   <Select.Option value="">司机审核状态</Select.Option>
@@ -1216,7 +1209,7 @@ const WaybillIndex = props => {
               </Form.Item>
             </Col>
           )}
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="vehicle_audit_status">
               <Select>
                 <Select.Option value="">
@@ -1229,7 +1222,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="business_flag_5">
               <Select>
                 <Select.Option value="">选择费用明细录入状态</Select.Option>
@@ -1239,7 +1232,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="business_flag_34">
               <Select>
                 <Select.Option value="">选择合同签署状态</Select.Option>
@@ -1250,7 +1243,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Form.Item name="carrier_pay_flag">
               <Select>
                 <Select.Option value="">选择结算状态</Select.Option>
@@ -1261,7 +1254,7 @@ const WaybillIndex = props => {
               </Select>
             </Form.Item>
           </Col>
-          <Col className="gutter-row" span={3}>
+          <Col span={3}>
             <Button type="primary" htmlType="submit">
               搜索
             </Button>
@@ -1273,7 +1266,7 @@ const WaybillIndex = props => {
               重置
             </Button>
           </Col>
-          <Col className="gutter-row" span={6}>
+          <Col span={6}>
             <Button
               type="primary"
               to={addForm}

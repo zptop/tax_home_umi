@@ -87,6 +87,23 @@ const routes = [
           },
         ],
       },
+      {
+        path: '/carrierInfo',
+        routes: [
+          {
+            path: '/carrierInfo/index',
+            component: './carrierInfo/index',
+          },
+          {
+            path: '/carrierInfo/driver-admin',
+            component: './carrierInfo/driver-admin',
+          },
+          {
+            path: '/carrierInfo/vehicle-admin',
+            component: './carrierInfo/vehicle-admin',
+          },
+        ],
+      },
     ],
   },
 ];

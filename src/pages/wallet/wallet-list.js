@@ -1,26 +1,11 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react';
-import { withRouter } from 'react-router-dom';
-import {
-  Row,
-  Col,
-  Table,
-  Button,
-  Select,
-  Form,
-  Input,
-  message,
-  DatePicker,
-  Modal,
-  Tooltip,
-  Drawer,
-} from 'antd';
+// import { withRouter } from 'react-router-dom';
+import { Table } from 'antd';
 import { formatDateYMDHMS, accDiv } from '../../util/tools';
 import config from '../../../config/config';
 import { connect } from 'dva';
 import qs from 'qs';
-import styles from './index.less';
 const namespace = 'wallet';
-const { confirm } = Modal;
 
 const mapStateToProps = state => {
   let { loading, totalPage, wallet_list, wallet_tax_list } = state[namespace];
@@ -57,11 +42,14 @@ const WalletList = props => {
 
   //父组件调用子组件的方法
   useImperativeHandle(props.onRef, () => {
-    console.log('props.onRef:', props.onRef);
     return {
       getList: values => {
-        let params = { page: objState.pageNum, num: objState.pageSize, flag };
-        params = { ...params, ...values };
+        let params = {
+          page: objState.pageNum,
+          num: objState.pageSize,
+          flag,
+          ...values,
+        };
         props.getWalletListFn(params);
       },
       exportFn: values => {
@@ -88,8 +76,7 @@ const WalletList = props => {
       pageNum: current,
       pageSize: pageSize,
     });
-    let params = { page: current, num: pageSize, flag };
-    params = { ...params, ...data };
+    let params = { page: current, num: pageSize, flag, ...data };
     props.getWalletListFn(params);
   };
 
@@ -100,15 +87,17 @@ const WalletList = props => {
       pageNum: page,
       pageSize,
     });
-    let params = { page, num: pageSize, flag };
-    params = { ...params, ...data };
+    let params = { page, num: pageSize, flag, ...data };
     props.getWalletListFn(params);
   };
 
   useEffect(() => {
-    console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
-    let params = { page: objState.pageNum, num: objState.pageSize, flag };
-    params = { ...params, ...data };
+    let params = {
+      page: objState.pageNum,
+      num: objState.pageSize,
+      flag,
+      ...data,
+    };
     props.getWalletListFn(params);
   }, [flag]);
 

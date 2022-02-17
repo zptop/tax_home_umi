@@ -1,4 +1,4 @@
-import { message, Modal } from 'antd';
+import { message } from 'antd';
 import {
   paymentRequestList,
   paymentHistoryList,
