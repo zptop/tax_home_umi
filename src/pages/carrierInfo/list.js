@@ -1,36 +1,15 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
-import {
-  Row,
-  Col,
-  Table,
-  Button,
-  Menu,
-  Select,
-  Form,
-  Input,
-  message,
-  DatePicker,
-  Modal,
-  Tooltip,
-  Dropdown,
-  Drawer,
-} from 'antd';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
+import { Table, Button, Menu, Modal, Tooltip, Dropdown } from 'antd';
 const { confirm } = Modal;
-import {
-  formatDateYMD,
-  formatDateYMDHMS,
-  accMul,
-  accDiv,
-} from '../../util/tools';
 import { history } from 'umi';
 import {
-  RetweetOutlined,
   DownOutlined,
   ExclamationCircleFilled,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import styles from './index.less';
 import { connect } from 'dva';
+import AddOrEditMan from './add-or-edit-man';
 const namespace = 'carrierInfo';
 
 const mapStateToProps = state => {
@@ -59,6 +38,15 @@ const mapDispatchToProps = dispatch => {
       dispatch({
         type: namespace + '/delOrRejectCarrierModel',
         value,
+      });
+    },
+    scanIdCardFn: value => {
+      dispatch({
+        type: namespace + '/scanIdCardModel',
+        value,
+        callback: res => {
+          console.log('res:', res);
+        },
       });
     },
   };
@@ -136,13 +124,15 @@ const List = props => {
   };
 
   //运单列表->更多操作
-  const menu = carrier_uin => (
-    <Menu onClick={changeMenu.bind(this, carrier_uin)}>
+  const menu = (carrier_uin, audit_status) => (
+    <Menu onClick={changeMenu.bind(this, carrier_uin, audit_status)}>
       <Menu.Item key="1">删除</Menu.Item>
-      <Menu.Item key="2">撤回</Menu.Item>
+      <Menu.Item key="2" disabled={audit_status != 0}>
+        撤回
+      </Menu.Item>
     </Menu>
   );
-  const changeMenu = (carrier_uin, e) => {
+  const changeMenu = (carrier_uin, audit_status, e) => {
     switch (e.key * 1) {
       case 1:
         confirm({
@@ -225,7 +215,10 @@ const List = props => {
                 银行卡管理
               </Button>
             )}
-            <Dropdown overlay={menu(carrier_uin)} trigger={['click']}>
+            <Dropdown
+              overlay={menu(carrier_uin, audit_status)}
+              trigger={['click']}
+            >
               <Button>
                 更多
                 <DownOutlined />
@@ -406,6 +399,8 @@ const List = props => {
           onShowSizeChange: onShowSizeChange,
         }}
       />
+      {/*新增车队老板*/}
+      <AddOrEditMan title="新增车队老板" />
     </>
   );
 };

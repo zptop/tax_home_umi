@@ -40,7 +40,7 @@ const CarrierInfo = props => {
   const [objState, setObjState] = useState({
     pageNum: 1,
     pageSize: 10,
-    searchName: 'waybill_no',
+    searchName: 'carrier_name',
     audit_status: '',
     driver_status: '',
     vehicle_status: '',
@@ -144,30 +144,30 @@ const CarrierInfo = props => {
           <Col span={4}>
             <Form.Item name="audit_status" label="承运人认证状态">
               <Select>
-                <Option value="200">全部</Option>
-                <Option value="1">审核中</Option>
-                <Option value="2">审核通过</Option>
-                <Option value="3">审核不通过</Option>
+                <Select.Option value="200">全部</Select.Option>
+                <Select.Option value="1">审核中</Select.Option>
+                <Select.Option value="2">审核通过</Select.Option>
+                <Select.Option value="3">审核不通过</Select.Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={4}>
             <Form.Item name="driver_status" label="司机认证状态">
               <Select>
-                <Option value="200">全部</Option>
-                <Option value="1">审核中</Option>
-                <Option value="2">审核通过</Option>
-                <Option value="3">审核不通过</Option>
+                <Select.Option value="200">全部</Select.Option>
+                <Select.Option value="1">审核中</Select.Option>
+                <Select.Option value="2">审核通过</Select.Option>
+                <Select.Option value="3">审核不通过</Select.Option>
               </Select>
             </Form.Item>
           </Col>
           <Col span={4}>
             <Form.Item name="vehicle_status" label="车辆认证状态">
               <Select>
-                <Option value="200">全部</Option>
-                <Option value="1">审核中</Option>
-                <Option value="2">审核通过</Option>
-                <Option value="3">审核不通过</Option>
+                <Select.Option value="200">全部</Select.Option>
+                <Select.Option value="1">审核中</Select.Option>
+                <Select.Option value="2">审核通过</Select.Option>
+                <Select.Option value="3">审核不通过</Select.Option>
               </Select>
             </Form.Item>
           </Col>

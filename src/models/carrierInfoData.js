@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { getCarrierList, delOrRejectCarrier } from '../sevice/carrierInfo';
+import { scanIdCard } from '../util/ocr';
 export default {
   namespace: 'carrierInfo',
   state: {
@@ -40,6 +41,14 @@ export default {
     },
   },
   effects: {
+    //ocr识别
+    *scanIdCardModel({ value, callback }, { call, put }) {
+      const res = yield call(scanIdCard, value, value.scanUrl);
+      if (res.code == 0) {
+        callback && callback(res);
+      }
+    },
+
     //承运人列表（全部或待处理）
     *getCarrierListModel({ value }, { call, put }) {
       yield put({ type: 'setLoading', payload: true });

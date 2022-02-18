@@ -9,6 +9,8 @@ var _antd = require('antd');
 
 var _carrierInfo = require('../sevice/carrierInfo');
 
+var _ocr = require('../util/ocr');
+
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
   if (Object.getOwnPropertySymbols) {
@@ -97,77 +99,40 @@ var _default = {
     },
   },
   effects: {
-    //承运人列表（全部或待处理）
-    getCarrierListModel:
+    //ocr识别
+    scanIdCardModel:
       /*#__PURE__*/
-      regeneratorRuntime.mark(function getCarrierListModel(_ref, _ref2) {
-        var value, call, put, res;
-        return regeneratorRuntime.wrap(function getCarrierListModel$(_context) {
+      regeneratorRuntime.mark(function scanIdCardModel(_ref, _ref2) {
+        var value, callback, call, put, res;
+        return regeneratorRuntime.wrap(function scanIdCardModel$(_context) {
           while (1) {
             switch ((_context.prev = _context.next)) {
               case 0:
-                value = _ref.value;
+                (value = _ref.value), (callback = _ref.callback);
                 (call = _ref2.call), (put = _ref2.put);
                 _context.next = 4;
-                return put({
-                  type: 'setLoading',
-                  payload: true,
-                });
+                return call(_ocr.scanIdCard, value, value.scanUrl);
 
               case 4:
-                _context.next = 6;
-                return call(
-                  _carrierInfo.getCarrierList,
-                  value,
-                  '/carrierInfo/' + value.flag,
-                );
-
-              case 6:
                 res = _context.sent;
 
-                if (!(res.code == 0)) {
-                  _context.next = 15;
-                  break;
+                if (res.code == 0) {
+                  callback && callback(res);
                 }
 
-                _context.next = 10;
-                return put({
-                  type: 'setLoading',
-                  payload: false,
-                });
-
-              case 10:
-                if (!(res.data && res.data.lists.length)) {
-                  _context.next = 13;
-                  break;
-                }
-
-                _context.next = 13;
-                return put({
-                  type: '_' + value.flag,
-                  payload: res.data,
-                });
-
-              case 13:
-                _context.next = 16;
-                break;
-
-              case 15:
-                _antd.message.warning(res.msg || '系统错误');
-
-              case 16:
+              case 6:
               case 'end':
                 return _context.stop();
             }
           }
-        }, getCarrierListModel);
+        }, scanIdCardModel);
       }),
-    //删除或撤回承运人
-    delOrRejectCarrierModel:
+    //承运人列表（全部或待处理）
+    getCarrierListModel:
       /*#__PURE__*/
-      regeneratorRuntime.mark(function delOrRejectCarrierModel(_ref3, _ref4) {
+      regeneratorRuntime.mark(function getCarrierListModel(_ref3, _ref4) {
         var value, call, put, res;
-        return regeneratorRuntime.wrap(function delOrRejectCarrierModel$(
+        return regeneratorRuntime.wrap(function getCarrierListModel$(
           _context2,
         ) {
           while (1) {
@@ -176,26 +141,94 @@ var _default = {
                 value = _ref3.value;
                 (call = _ref4.call), (put = _ref4.put);
                 _context2.next = 4;
-                return call(_carrierInfo.delOrRejectCarrier, value, value.url);
+                return put({
+                  type: 'setLoading',
+                  payload: true,
+                });
 
               case 4:
+                _context2.next = 6;
+                return call(
+                  _carrierInfo.getCarrierList,
+                  value,
+                  '/carrierInfo/' + value.flag,
+                );
+
+              case 6:
                 res = _context2.sent;
 
                 if (!(res.code == 0)) {
-                  _context2.next = 11;
+                  _context2.next = 15;
+                  break;
+                }
+
+                _context2.next = 10;
+                return put({
+                  type: 'setLoading',
+                  payload: false,
+                });
+
+              case 10:
+                if (!(res.data && res.data.lists.length)) {
+                  _context2.next = 13;
+                  break;
+                }
+
+                _context2.next = 13;
+                return put({
+                  type: '_' + value.flag,
+                  payload: res.data,
+                });
+
+              case 13:
+                _context2.next = 16;
+                break;
+
+              case 15:
+                _antd.message.warning(res.msg || '系统错误');
+
+              case 16:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        },
+        getCarrierListModel);
+      }),
+    //删除或撤回承运人
+    delOrRejectCarrierModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function delOrRejectCarrierModel(_ref5, _ref6) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function delOrRejectCarrierModel$(
+          _context3,
+        ) {
+          while (1) {
+            switch ((_context3.prev = _context3.next)) {
+              case 0:
+                value = _ref5.value;
+                (call = _ref6.call), (put = _ref6.put);
+                _context3.next = 4;
+                return call(_carrierInfo.delOrRejectCarrier, value, value.url);
+
+              case 4:
+                res = _context3.sent;
+
+                if (!(res.code == 0)) {
+                  _context3.next = 11;
                   break;
                 }
 
                 _antd.message.success(res.msg || '删除成功');
 
-                _context2.next = 9;
+                _context3.next = 9;
                 return put({
                   type: 'getCarrierListModel',
                   value: value,
                 });
 
               case 9:
-                _context2.next = 12;
+                _context3.next = 12;
                 break;
 
               case 11:
@@ -203,7 +236,7 @@ var _default = {
 
               case 12:
               case 'end':
-                return _context2.stop();
+                return _context3.stop();
             }
           }
         },
