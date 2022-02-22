@@ -25,10 +25,12 @@ import { createFromIconfontCN } from '@ant-design/icons';
 const IconFont = createFromIconfontCN({
   scriptUrl: ['//at.alicdn.com/t/font_1595958_p5529b5fjfr.js'],
 });
+import AddOrEditMan from './add-or-edit-man';
 import List from './list';
 import styles from './index.less';
 const CarrierInfo = props => {
   const ChildRef = React.createRef();
+  const ChildAddOrEditRef = React.createRef();
   const dataRef = useRef('');
   const [curTabKey, setCurTabKey] = useState('1');
   const changeTabs = activeKey => {
@@ -45,6 +47,11 @@ const CarrierInfo = props => {
     driver_status: '',
     vehicle_status: '',
   });
+
+  //打开--添加车老板弹框
+  const openAddOrEditManModal = () => {
+    ChildAddOrEditRef.current.setAddOrEditManModal();
+  };
 
   //选择单号
   const selectedNo = value => {
@@ -180,7 +187,9 @@ const CarrierInfo = props => {
             </Button>
           </Col>
           <Col span={5}>
-            <Button type="primary">新增车队老板</Button>
+            <Button type="primary" onClick={openAddOrEditManModal}>
+              新增车队老板
+            </Button>
             <Tooltip
               placement="left"
               title={
@@ -249,6 +258,8 @@ const CarrierInfo = props => {
           )}
         </TabPane>
       </Tabs>
+      {/*新增车队老板*/}
+      <AddOrEditMan title="新增车队老板" onRef={ChildAddOrEditRef} />
     </>
   );
 };

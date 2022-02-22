@@ -26,3 +26,16 @@
 .column_carrier button {
   margin: 0 3px;
 }
+.submit_content_box {
+  justify-content: flex-end;
+}
+.upload_row :global .ant-col-12 {
+  position: relative;
+}
+.upload_row :global .ant-col-12 .ant-form-item {
+  justify-content: space-between;
+}
+.upload_row :global .ant-col-12 .ant-form-item .ant-col-sm-6 {
+  flex: 0 0 30%;
+  max-width: 30%;
+}

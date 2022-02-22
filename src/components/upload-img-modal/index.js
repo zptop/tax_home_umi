@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Upload, Modal, message, Image } from 'antd';
-import { CloudUploadOutlined } from '@ant-design/icons';
+import {
+  CloudUploadOutlined,
+  LoadingOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { getBaseUrl } from '../../util/tools';
 import { connect } from 'dva';
 const namespace = 'waybill';
@@ -9,6 +13,12 @@ const mapDispatchToProps = dispatch => {
     delImgFromWaybillFn: value => {
       dispatch({
         type: namespace + '/delImgFromWaybillModel',
+        value,
+      });
+    },
+    delImgFromVehicleFn: value => {
+      dispatch({
+        type: namespace + '/delImgFromVehicleModel',
         value,
       });
     },
@@ -31,6 +41,8 @@ const UploadImgModal = props => {
     previewTitle: '',
     fileList: [],
   });
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setObjState({
@@ -68,12 +80,16 @@ const UploadImgModal = props => {
 
   //上传
   const handleChange = ({ file, fileList }) => {
+    if (file.status === 'uploading') {
+      setLoading(true);
+    }
     if (file && file.response) {
       let {
         response: { code, msg },
       } = file;
       if (code == 0) {
         if (fileList.length > 0) {
+          setLoading(false);
           let picList = [];
           fileList.forEach(item => {
             if (item.response) {
@@ -108,6 +124,7 @@ const UploadImgModal = props => {
         props.delImgFromWaybillFn({ media_id: file.uid });
       } else {
         //删除车辆图片
+        props.delImgFromVehicleFn({ media_id: file.uid });
       }
     }
   };
@@ -123,12 +140,12 @@ const UploadImgModal = props => {
       return resolve(true);
     });
   };
-
   const { previewVisible, previewImage, fileList, previewTitle } = objState;
 
   const uploadButton = (
     <div>
-      <CloudUploadOutlined style={{ fontSize: '20px' }} />
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}
+      {/* <CloudUploadOutlined style={{ fontSize: '20px' }} /> */}
       <div style={{ fontSize: '12px' }}>上传</div>
     </div>
   );
@@ -150,7 +167,7 @@ const UploadImgModal = props => {
           onChange={handleChange}
           accept="image/*,.pdf"
         >
-          {fileList.length >= 9 ? null : uploadButton}
+          {fileList.length >= props.count * 1 ? null : uploadButton}
         </Upload>
       )}
       <Modal
@@ -163,7 +180,6 @@ const UploadImgModal = props => {
         ]}
         onCancel={handleCancel}
       >
-        {/* <img alt="example" style={{ width: '100%' }} src={previewImage} /> */}
         <Image
           style={{ width: '100%', cursor: 'pointer' }}
           src={previewImage}

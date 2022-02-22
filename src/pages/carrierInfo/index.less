@@ -4,12 +4,14 @@
   form {
     width: 100%;
     display: flex;
+
     :global {
       span {
         &.ant-input-group-addon {
           width: 50%;
         }
       }
+
       .ant-col-3 {
         padding: 0 5px !important;
       }
@@ -21,9 +23,11 @@
           margin-left: 5px;
         }
       }
+
       .ant-col-7 {
         text-align: right;
       }
+
       .ant-col-4 {
         padding-left: 0 !important;
       }
@@ -34,5 +38,27 @@
 .column_carrier {
   button {
     margin: 0 3px;
+  }
+}
+
+//添加车老板
+.submit_content_box {
+  justify-content: flex-end;
+}
+
+.upload_row {
+  :global {
+    .ant-col-12 {
+      position: relative;
+
+      .ant-form-item {
+        justify-content: space-between;
+
+        .ant-col-sm-6 {
+          flex: 0 0 30%;
+          max-width: 30%;
+        }
+      }
+    }
   }
 }

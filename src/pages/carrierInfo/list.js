@@ -9,7 +9,6 @@ import {
 } from '@ant-design/icons';
 import styles from './index.less';
 import { connect } from 'dva';
-import AddOrEditMan from './add-or-edit-man';
 const namespace = 'carrierInfo';
 
 const mapStateToProps = state => {
@@ -399,8 +398,6 @@ const List = props => {
           onShowSizeChange: onShowSizeChange,
         }}
       />
-      {/*新增车队老板*/}
-      <AddOrEditMan title="新增车队老板" />
     </>
   );
 };

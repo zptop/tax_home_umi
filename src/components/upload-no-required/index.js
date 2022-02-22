@@ -294,6 +294,7 @@ const UploadNoRequired = props => {
             delPicUrl="waybill/delpic"
             flag="replyImg"
             replyImg={replyImgFromChild}
+            count="9"
           />
         </div>
         <div className={styles.title_item}>
@@ -309,6 +310,7 @@ const UploadNoRequired = props => {
             delPicUrl="waybill/delpic"
             flag="contractImg"
             contractImg={contractImgFromChild}
+            count="9"
           />
         </div>
         <div className={styles.title_item}>
@@ -324,6 +326,7 @@ const UploadNoRequired = props => {
             delPicUrl="waybill/delpic"
             flag="payImg"
             payImg={payImgFromChild}
+            count="16"
           />
         </div>
         <Form.Item
@@ -339,4 +342,7 @@ const UploadNoRequired = props => {
   );
 };
 const memoUploadNoRequired = React.memo(UploadNoRequired);
-export default connect(mapStateToProps, mapDispatchToProps)(memoUploadNoRequired);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(memoUploadNoRequired);

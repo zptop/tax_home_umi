@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
 import {
   Row,
   Col,
@@ -10,6 +10,7 @@ import {
   message,
   DatePicker,
   Modal,
+  Popover,
   Tooltip,
   Drawer,
 } from 'antd';
@@ -20,14 +21,14 @@ import {
   timeCutdown,
 } from '../../util/tools';
 import { connect } from 'dva';
+import UploadImgModal from '@/components/upload-img-modal';
 import styles from './index.less';
 const mapStateToProps = state => {};
 const mapDispatchToProps = dispatch => {};
 const AddOrEditMan = props => {
   let { title } = props;
-  const [isaddOrEditManFlag, setIsaddOrEditManFlag] = useState(true);
   const [form] = Form.useForm(); //新增或编辑表单
-
+  const [isaddOrEditManFlag, setIsaddOrEditManFlag] = useState(false);
   //承运人(车老板)、司机(新增和编辑)
   const [carrierSubmitData, setCarrierSubmitData] = useState({
     real_name: '',
@@ -56,6 +57,30 @@ const AddOrEditMan = props => {
   const closeModal = () => {
     setIsaddOrEditManFlag(false);
   };
+
+  //父组件调用子组件方法
+  useImperativeHandle(props.onRef, () => {
+    return {
+      setAddOrEditManModal: () => {
+        setIsaddOrEditManFlag(true);
+      },
+    };
+  });
+
+  //身份证正页
+  const getIdPicFront = () => {
+    return [];
+  };
+  //子组件传过来的的身份证页
+  const rePicFrontFromChild = () => {};
+
+  //身份证国徽页
+  const getIdPicBack = () => {
+    return [];
+  };
+  //子组件传过来的的身份证国徽页
+  const rePicBackFromChild = () => {};
+
   const formItemLayout = {
     labelCol: {
       xs: {
@@ -89,7 +114,64 @@ const AddOrEditMan = props => {
           onFinish={onFinish}
           scrollToFirstError
           initialValues={{}}
-        ></Form>
+        >
+          <Row className={styles.upload_row}>
+            <Col span={12}>
+              <Form.Item label="身份证头像页">
+                <UploadImgModal
+                  data={{
+                    service_type: 20010,
+                    media_type: 201,
+                  }}
+                  picListShow={getIdPicFront()}
+                  delPicUrl="waybill/delpic"
+                  flag="rePicFront"
+                  rePicFront={rePicFrontFromChild}
+                  count="1"
+                />
+              </Form.Item>
+              <Popover
+                className={styles.tips}
+                content={<img src={require('@/assets/example_01.png')} />}
+                trigger="hover"
+              >
+                <Button style={{ position: 'absolute', top: '40px' }}>
+                  示例
+                </Button>
+              </Popover>
+            </Col>
+            <Col span={12}>
+              <Form.Item label="身份证国徽页">
+                <UploadImgModal
+                  data={{
+                    service_type: 20010,
+                    media_type: 201,
+                  }}
+                  picListShow={getIdPicBack()}
+                  delPicUrl="waybill/delpic"
+                  flag="rePicBack"
+                  rePicBack={rePicBackFromChild}
+                  count="1"
+                />
+              </Form.Item>
+              <Popover
+                className={styles.tips}
+                content={<img src={require('@/assets/example_02.png')} />}
+                trigger="hover"
+              >
+                <Button style={{ position: 'absolute', top: '40px' }}>
+                  示例
+                </Button>
+              </Popover>
+            </Col>
+          </Row>
+
+          <Row className={styles.submit_content_box}>
+            <Button type="primary" htmlType="submit">
+              确定
+            </Button>
+          </Row>
+        </Form>
       </Modal>
     </>
   );
