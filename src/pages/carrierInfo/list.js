@@ -84,16 +84,12 @@ const List = props => {
 
   //打开-编辑承运人、承运人详情
   const handleEditOrDetail = (carrier_uin, flag) => {
+    console.log('carrier_uin:', carrier_uin);
     if (flag == 'editCarrier') {
-      this.title = '编辑承运人';
-      this.isaddOrEditManFlag = true;
-      this.postUrl = 'carrierInfo/editCarrier';
+      props.getUinOrId({ carrier_uin, title: '编辑承运人' });
     } else {
-      this.title = '承运人详情';
-      this.detailFlag = true;
+      props.getUinOrId({ carrier_uin, title: '承运人详情' });
     }
-    this.showType = flag;
-    this.carrier_uin = carrier_uin;
   };
 
   //车辆管理

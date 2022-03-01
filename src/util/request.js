@@ -26,7 +26,7 @@ const codeMessage = {
 const errorHandler = error => {
   const { response } = error;
 
-  if (response && response.status) {
+  if (response && response.status != 200) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
     notification.error({
@@ -46,43 +46,37 @@ const request = extend({
 
 // request拦截器, 改变url 或 options.
 request.interceptors.request.use(async (url, options) => {
-  let c_token = localStorage.getItem("x-auth-token");
+  let c_token = localStorage.getItem('x-auth-token');
   if (c_token) {
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      'Accept': 'application/json',
-      'Access-WR-Token': c_token
+      Accept: 'application/json',
+      'Access-WR-Token': c_token,
     };
-    return (
-      {
-        url: url,
-        options: { ...options, headers: headers },
-      }
-    );
+    return {
+      url: url,
+      options: { ...options, headers: headers },
+    };
   } else {
     const headers = {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      'Accept': 'application/json',
-      'Access-WR-Token': c_token
+      Accept: 'application/json',
+      'Access-WR-Token': c_token,
     };
-    return (
-      {
-        url: url,
-        options: { ...options },
-      }
-    );
+    return {
+      url: url,
+      options: { ...options },
+    };
   }
-
-})
+});
 
 // response拦截器, 处理response
 request.interceptors.response.use((response, options) => {
-  let token = response.headers.get("x-auth-token");
+  let token = response.headers.get('x-auth-token');
   if (token) {
-    localStorage.setItem("x-auth-token", token);
+    localStorage.setItem('x-auth-token', token);
   }
   return response;
 });
-
 
 export default request;

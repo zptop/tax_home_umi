@@ -55,10 +55,30 @@
         justify-content: space-between;
 
         .ant-col-sm-6 {
-          flex: 0 0 30%;
-          max-width: 30%;
+          flex: 0 0 38%;
+          max-width: 38%;
+
+          & > label {
+            &::before {
+              display: inline-block;
+              margin-right: 4px;
+              color: #ff4d4f;
+              font-size: 14px;
+              font-family: SimSun, sans-serif;
+              line-height: 1;
+              content: '*';
+            }
+          }
         }
       }
+    }
+  }
+}
+
+.submit_form {
+  :global {
+    .ant-form-item-label {
+      text-align: left;
     }
   }
 }

@@ -38,6 +38,14 @@ const CarrierInfo = props => {
   };
   const [form] = Form.useForm();
   const [placeholderInput, setPlaceholderInput] = useState('请输入承运人名称');
+  const [title, setTitle] = useState('新增车队老板');
+  //获取承运人司机编辑详情
+  const getUinOrId = value => {
+    openAddOrEditManModal();
+    setTitle(value.title);
+    ChildAddOrEditRef.current.setUinOrId(value);
+  };
+
   //表格初始化状态
   const [objState, setObjState] = useState({
     pageNum: 1,
@@ -120,6 +128,12 @@ const CarrierInfo = props => {
     });
     ChildRef.current.getList(formatSelectedOptions(objState));
   };
+
+  //添加完"车老板或司机"后触发列表
+  const getCarrierListFromAddOrEdit = () => {
+    ChildRef.current.getList(formatSelectedOptions(objState));
+  };
+
   return (
     <>
       <Row
@@ -239,6 +253,7 @@ const CarrierInfo = props => {
               flag="getCarrierList"
               data={dataRef.current}
               onRef={ChildRef}
+              getUinOrId={getUinOrId}
               driverAdmin="/carrierInfo/driver-admin"
               vehicleAdmin="/carrierInfo/vehicle-admin"
             />
@@ -259,7 +274,11 @@ const CarrierInfo = props => {
         </TabPane>
       </Tabs>
       {/*新增车队老板*/}
-      <AddOrEditMan title="新增车队老板" onRef={ChildAddOrEditRef} />
+      <AddOrEditMan
+        title={title}
+        onRef={ChildAddOrEditRef}
+        addOrEditManCallList={getCarrierListFromAddOrEdit}
+      />
     </>
   );
 };

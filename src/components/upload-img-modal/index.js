@@ -52,8 +52,9 @@ const UploadImgModal = props => {
     });
   }, [props.data.service_no]);
 
-  const handleCancel = () =>
+  const handleCancel = () => {
     setObjState({ ...objState, previewVisible: false });
+  };
 
   //预览
   const handlePreview = async file => {
@@ -70,11 +71,10 @@ const UploadImgModal = props => {
 
     setObjState({
       ...objState,
-      // previewImage: file.url || file.preview,
       previewImage: url,
       previewVisible: true,
       previewTitle:
-        file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
+        props.title || file.url.substring(file.url.lastIndexOf('/') + 1),
     });
   };
 
@@ -94,14 +94,22 @@ const UploadImgModal = props => {
           fileList.forEach(item => {
             if (item.response) {
               let {
-                response: { data },
+                response: {
+                  data: {
+                    media_id,
+                    media_path,
+                    media_path_source,
+                    media_thumb,
+                  },
+                },
               } = item;
               picList.push({
-                uid: data.media_id,
+                uid: media_id,
                 name: props.title,
                 status: 'done',
-                url: data.media_path,
-                thumbUrl: data.media_thumb,
+                url: media_path,
+                media_path_source,
+                thumbUrl: media_thumb,
               });
             } else {
               picList.push(item);
@@ -142,6 +150,9 @@ const UploadImgModal = props => {
   };
   const { previewVisible, previewImage, fileList, previewTitle } = objState;
 
+  // sevice_no为时间戳时不传（司机管理）
+  // sevice_no中含有字母时，要传（运单）
+  const { service_no, ...service_media_type } = props.data;
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -158,7 +169,7 @@ const UploadImgModal = props => {
           name="media_file"
           withCredentials={true}
           listType="picture-card"
-          data={props.data}
+          data={/^[0-9]*$/.test(service_no) ? service_media_type : props.data}
           fileList={fileList}
           headers={{ 'Access-WR-Token': localStorage.getItem('x-auth-token') }}
           beforeUpload={beforeUpload}
@@ -188,5 +199,5 @@ const UploadImgModal = props => {
     </div>
   );
 };
-
-export default connect(null, mapDispatchToProps)(UploadImgModal);
+const memoUploadImgModal = React.memo(UploadImgModal);
+export default connect(null, mapDispatchToProps)(memoUploadImgModal);

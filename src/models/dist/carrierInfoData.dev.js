@@ -69,7 +69,9 @@ var _default = {
     //承运人列表(待处理)
     loading: false,
     //列表加载状态
-    totalNum: 0, //总条数,
+    totalNum: 0,
+    //总条数,
+    carrierSubmitDataDetail: {}, //编辑时获取的详情信息（承运人或司机）
   },
   reducers: {
     //loading状态
@@ -97,6 +99,15 @@ var _default = {
         totalNum: totalNum,
       });
     },
+    //编辑时获取的详情信息（承运人或司机）
+    setCarrierSubmitDataDetail: function setCarrierSubmitDataDetail(
+      state,
+      action,
+    ) {
+      return _objectSpread({}, state, {
+        carrierSubmitDataDetail: action.payload,
+      });
+    },
   },
   effects: {
     //ocr识别
@@ -115,10 +126,7 @@ var _default = {
 
               case 4:
                 res = _context.sent;
-
-                if (res.code == 0) {
-                  callback && callback(res);
-                }
+                return _context.abrupt('return', res);
 
               case 6:
               case 'end':
@@ -241,6 +249,79 @@ var _default = {
           }
         },
         delOrRejectCarrierModel);
+      }),
+    //获取承运人或司机详情
+    getCarrierInfoModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function getCarrierInfoModel(_ref7, _ref8) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function getCarrierInfoModel$(
+          _context4,
+        ) {
+          while (1) {
+            switch ((_context4.prev = _context4.next)) {
+              case 0:
+                value = _ref7.value;
+                (call = _ref8.call), (put = _ref8.put);
+                _context4.next = 4;
+                return call(_carrierInfo.getCarrierInfo, value);
+
+              case 4:
+                res = _context4.sent;
+
+                if (!(res.code == 0)) {
+                  _context4.next = 10;
+                  break;
+                }
+
+                _context4.next = 8;
+                return put({
+                  type: 'setCarrierSubmitDataDetail',
+                  payload: res.data,
+                });
+
+              case 8:
+                _context4.next = 11;
+                break;
+
+              case 10:
+                _antd.message.warning(res.msg || '系统错误');
+
+              case 11:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        },
+        getCarrierInfoModel);
+      }),
+    //新增车队老板
+    addCarrierBossModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function addCarrierBossModel(_ref9, _ref10) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function addCarrierBossModel$(
+          _context5,
+        ) {
+          while (1) {
+            switch ((_context5.prev = _context5.next)) {
+              case 0:
+                value = _ref9.value;
+                (call = _ref10.call), (put = _ref10.put);
+                _context5.next = 4;
+                return call(_carrierInfo.addCarrierBoss, value);
+
+              case 4:
+                res = _context5.sent;
+                return _context5.abrupt('return', res);
+
+              case 6:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        },
+        addCarrierBossModel);
       }),
   },
   subscriptions: {},

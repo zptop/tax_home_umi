@@ -125,6 +125,7 @@ const UploadRequired = props => {
               delPicUrl="waybill/delpic"
               flag="replyImg"
               replyImg={replyImgFromChild}
+              count="9"
             />
           </div>
           <div className={styles.title_item}>
@@ -139,6 +140,7 @@ const UploadRequired = props => {
               delPicUrl="waybill/delpic"
               flag="contractImg"
               contractImg={contractImgFromChild}
+              count="9"
             />
           </div>
         </div>
