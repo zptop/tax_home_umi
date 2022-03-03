@@ -860,10 +860,7 @@ var _default = {
 
               case 4:
                 res = _context11.sent;
-
-                if (res.code == 0) {
-                  console.log('运单图片-删除成功');
-                }
+                return _context11.abrupt('return', res);
 
               case 6:
               case 'end':
@@ -894,6 +891,8 @@ var _default = {
 
                 if (res.code == 0) {
                   console.log('车辆图片-删除成功');
+                } else {
+                  _antd.message.warning(res.msg || '删除失败');
                 }
 
               case 6:

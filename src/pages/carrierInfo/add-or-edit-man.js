@@ -210,8 +210,6 @@ const AddOrEditMan = props => {
     });
     setIsaddOrEditManFlag(false);
     setTimestamp(new Date().getTime());
-    getIdPicFront('del');
-    getIdPicBack('del');
   };
 
   //父组件调用子组件方法
@@ -228,8 +226,20 @@ const AddOrEditMan = props => {
     };
   });
 
-  //身份证头像页
-  const [getIdPicFront, setGetIdPicFront] = useState([]);
+  //身份证头像页详情
+  const getIdPicFront = () => {
+    let { id_pic1, id_pic1_text } = carrierSubmitDataDetail;
+    return [
+      {
+        uid: new Date().getTime(),
+        name: props.title,
+        status: 'done',
+        url: id_pic1_text,
+        media_path_source: id_pic1,
+        thumbUrl: id_pic1_text,
+      },
+    ];
+  };
   //子组件传过来的的身份头像页
   const rePicFrontFromChild = file => {
     let { media_path_source } = file[0];
@@ -253,8 +263,20 @@ const AddOrEditMan = props => {
       });
   };
 
-  //身份证国徽页
-  const [getIdPicBack, setGetIdPicBack] = useState([]);
+  //身份证国徽页详情
+  const getIdPicBack = () => {
+    let { id_pic2, id_pic2_text } = carrierSubmitDataDetail;
+    return [
+      {
+        uid: new Date().getTime(),
+        name: props.title,
+        status: 'done',
+        url: id_pic2_text,
+        media_path_source: id_pic2,
+        thumbUrl: id_pic2_text,
+      },
+    ];
+  };
   //子组件传过来的的身份证国徽页
   const rePicBackFromChild = file => {
     let { media_path_source } = file[0];
@@ -348,19 +370,9 @@ const AddOrEditMan = props => {
         address,
         lic_issue_name,
         id_expire: moment(id_expire, 'YYYY-MM-DD') || null,
-        id_pic1: '',
-        id_pic2: '',
+        id_pic1,
+        id_pic2,
       });
-      setGetIdPicFront([
-        {
-          uid: media_id,
-          name: props.title,
-          status: 'done',
-          url: media_path,
-          media_path_source,
-          thumbUrl: media_thumb,
-        },
-      ]);
     }
   }, [isaddOrEditManFlag]);
 
@@ -393,7 +405,7 @@ const AddOrEditMan = props => {
                     media_type: 201,
                     service_no: timestamp,
                   }}
-                  picListShow={getIdPicFront}
+                  picListShow={getIdPicFront()}
                   delPicUrl="waybill/delpic"
                   flag="rePicFront"
                   rePicFront={rePicFrontFromChild}
@@ -419,7 +431,7 @@ const AddOrEditMan = props => {
                     media_type: 201,
                     service_no: timestamp,
                   }}
-                  picListShow={getIdPicBack}
+                  picListShow={getIdPicBack()}
                   delPicUrl="waybill/delpic"
                   flag="rePicBack"
                   rePicBack={rePicBackFromChild}

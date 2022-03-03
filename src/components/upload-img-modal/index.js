@@ -11,7 +11,7 @@ const namespace = 'waybill';
 const mapDispatchToProps = dispatch => {
   return {
     delImgFromWaybillFn: value => {
-      dispatch({
+      return dispatch({
         type: namespace + '/delImgFromWaybillModel',
         value,
       });
@@ -50,7 +50,8 @@ const UploadImgModal = props => {
       previewVisible: false,
       fileList: props.picListShow,
     });
-  }, [props.data.service_no]);
+    console.log('props.picListShow:', props.picListShow);
+  }, [props.picListShow]);
 
   const handleCancel = () => {
     setObjState({ ...objState, previewVisible: false });
@@ -109,13 +110,14 @@ const UploadImgModal = props => {
                 status: 'done',
                 url: media_path,
                 media_path_source,
+                media_id,
                 thumbUrl: media_thumb,
               });
             } else {
               picList.push(item);
             }
           });
-          props[props.flag](picList); //子组件通过函数传值到父组件
+          props[props.flag]({ picList, flag: props.flag }); //子组件通过函数传值到父组件
         }
         setObjState({ ...objState, fileList });
       } else {
@@ -126,13 +128,31 @@ const UploadImgModal = props => {
 
   //删除
   const handleonRemove = file => {
+    var media_id = null;
+    let { response } = file;
+    if (response) {
+      //新上传-删除
+      var {
+        response: {
+          data: { media_id },
+        },
+      } = file;
+      media_id = media_id;
+    } else {
+      //详情-删除
+      media_id = file.media_id;
+    }
     if (file) {
       if (props.delPicUrl == 'waybill/delpic') {
         //删除运单图片
-        props.delImgFromWaybillFn({ media_id: file.uid });
+        props.delImgFromWaybillFn({ media_id }).then(res => {
+          if (res.code == 0) {
+            props[props.flag + 'Del']({ media_id, flag: props.flag });
+          }
+        });
       } else {
         //删除车辆图片
-        props.delImgFromVehicleFn({ media_id: file.uid });
+        props.delImgFromVehicleFn({ media_id });
       }
     }
   };
@@ -160,7 +180,6 @@ const UploadImgModal = props => {
       <div style={{ fontSize: '12px' }}>上传</div>
     </div>
   );
-
   return (
     <div>
       {fileList && (

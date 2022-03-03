@@ -54,38 +54,62 @@ const tailLayout = {
   },
 };
 const UploadNoRequired = props => {
+  let { waybill_no, waybillDetailInfo } = props;
   const [form] = Form.useForm();
   const [isShowPayChannel, setIsShowPayChannel] = useState(false);
   const reply_media_ids = useRef(null);
   const contract_media_ids = useRef(null);
   const pay_media_ids = useRef(null);
 
-  useEffect(() => {
-    props.getWaybillDetailFn({
-      waybill_no: props.waybill_no,
+  //回显图片
+  const showBackImg = (arr, title) => {
+    const arr_temp = arr.map(item => {
+      return {
+        uid: item.media_id,
+        media_id: item.media_id,
+        name: title,
+        status: 'done',
+        url: item.media_path,
+        thumbUrl: item.media_thumb,
+      };
     });
-    props.getPayChannelFn();
-  }, [props.waybill_no]);
+    switch (title) {
+      case '回单图片':
+        reply_media_ids.current = arr_temp;
+        break;
+      case '合同图片':
+        contract_media_ids.current = arr_temp;
+        break;
+      case '支付凭证':
+        pay_media_ids.current = arr_temp;
+        break;
+    }
+    return arr_temp;
+  };
 
   useEffect(() => {
-    if (props && Object.keys(props.waybillDetailInfo).length) {
-      let { waybill_amount, pay_style, pay_channel } = props.waybillDetailInfo;
+    props.getWaybillDetailFn({ waybill_no });
+    if (Object.keys(waybillDetailInfo).length) {
+      let { waybill_amount, pay_style, pay_channel } = waybillDetailInfo;
       form.setFieldsValue({
-        waybill_amount: accDiv(waybill_amount, 100).toFixed(2),
+        waybill_amount,
         pay_style,
         pay_channel,
       });
     }
-  }, [props.waybillDetailInfo.waybill_no]);
+  }, [waybill_no]);
 
   const onFinish = fieldsValue => {
     let values = {
       ...fieldsValue,
-      waybill_no: props.waybill_no,
+      waybill_no,
       waybill_amount: accMul(fieldsValue['waybill_amount'], 100),
-      reply_media_ids: reply_media_ids.current || '',
-      contract_media_ids: contract_media_ids.current || '',
-      pay_media_ids: pay_media_ids.current || '',
+      reply_media_ids:
+        reply_media_ids.current.map(item => item.media_id).join(',') || '',
+      contract_media_ids:
+        contract_media_ids.current.map(item => item.media_id).join(',') || '',
+      pay_media_ids:
+        pay_media_ids.current.map(item => item.media_id).join(',') || '',
       transportType: props.transportType,
     };
     props.uploadNoRequiredSubmitFn(values);
@@ -132,88 +156,25 @@ const UploadNoRequired = props => {
     props.getPayChannelFn({ name: name || null });
   };
 
-  //子组件传过来的回单图片
-  const replyImgFromChild = picList => {
-    reply_media_ids.current = picList.map(item => item.uid).join(',');
-  };
-
-  //子组件传过来的合同图片
-  const contractImgFromChild = picList => {
-    contract_media_ids.current = picList.map(item => item.uid).join(',');
-  };
-
-  //子组件传过来的银行支付凭证
-  const payImgFromChild = picList => {
-    pay_media_ids.current = picList.map(item => item.uid).join(',');
-  };
-  //回单图片
-  const getReplyImgArr = () => {
-    let {
-      waybillDetailInfo,
-      waybillDetailInfo: { reply_media },
-    } = props;
-    let reply_media_temp = [];
-    if (Object.keys(waybillDetailInfo).length && reply_media) {
-      reply_media.forEach(item => {
-        reply_media_temp.push({
-          uid: item.media_id,
-          name: '回单图片',
-          status: 'done',
-          url: item.media_path,
-          thumbUrl: item.media_thumb,
-        });
-      });
-      reply_media_ids.current = reply_media
-        .map(item => item.media_id)
-        .join(',');
+  //子组件传过来的回单图片、合同图片、银行支付凭证
+  const upLoadSucc = obj => {
+    let { flag, picList } = obj;
+    switch (flag) {
+      case 'replyImg':
+        showBackImg(picList, '回单图片');
+        break;
+      case 'contractImg':
+        showBackImg(picList, '合同图片');
+        break;
+      case 'payImg':
+        showBackImg(picList, '支付凭证');
+        break;
     }
-    return reply_media_temp;
   };
 
-  //合同图片
-  const getContractImgArr = () => {
-    let {
-      waybillDetailInfo,
-      waybillDetailInfo: { contract_media },
-    } = props;
-    let contract_media_temp = [];
-    if (Object.keys(waybillDetailInfo).length && contract_media) {
-      contract_media.forEach(item => {
-        contract_media_temp.push({
-          uid: item.media_id,
-          name: '合同图片',
-          status: 'done',
-          url: item.media_path,
-          thumbUrl: item.media_thumb,
-        });
-      });
-      contract_media_ids.current = contract_media
-        .map(item => item.media_id)
-        .join(',');
-    }
-    return contract_media_temp;
-  };
-
-  //银行支付凭证
-  const getPayImgArr = () => {
-    let {
-      waybillDetailInfo,
-      waybillDetailInfo: { pay_media },
-    } = props;
-    let pay_media_temp = [];
-    if (Object.keys(waybillDetailInfo).length && pay_media) {
-      pay_media.forEach(item => {
-        pay_media_temp.push({
-          uid: item.media_id,
-          name: '支付凭证',
-          status: 'done',
-          url: item.media_path,
-          thumbUrl: item.media_thumb,
-        });
-      });
-      pay_media_ids.current = pay_media.map(item => item.media_id).join(',');
-    }
-    return pay_media_temp;
+  //删除图片
+  const delImgSucc = () => {
+    props.getWaybillDetailFn({ waybill_no });
   };
 
   return (
@@ -258,7 +219,7 @@ const UploadNoRequired = props => {
           <Radio.Group
             buttonStyle="solid"
             onChange={quickChecked}
-            value={props.waybillDetailInfo.pay_style || ''}
+            value={waybillDetailInfo.pay_style || ''}
           >
             <Radio.Button value="银行转账">银行转账</Radio.Button>
             <Radio.Button value="第三方支付">第三方支付</Radio.Button>
@@ -281,54 +242,70 @@ const UploadNoRequired = props => {
             {renderPayChannelArr(props.payChannelArr)}
           </div>
         )}
-        <div className={styles.title_item}>
-          <h2>上传回单</h2>
-          <UploadImgModal
-            data={{
-              service_no: props.waybillDetailInfo.waybill_no,
-              service_type: 30010,
-              media_type: 61,
-            }}
-            title="回单图片"
-            picListShow={getReplyImgArr()}
-            delPicUrl="waybill/delpic"
-            flag="replyImg"
-            replyImg={replyImgFromChild}
-            count="9"
-          />
-        </div>
-        <div className={styles.title_item}>
-          <h2>上传合同（收票方与承运方签署的）</h2>
-          <UploadImgModal
-            data={{
-              service_no: props.waybillDetailInfo.waybill_no,
-              service_type: 30010,
-              media_type: 21,
-            }}
-            title="合同图片"
-            picListShow={getContractImgArr()}
-            delPicUrl="waybill/delpic"
-            flag="contractImg"
-            contractImg={contractImgFromChild}
-            count="9"
-          />
-        </div>
-        <div className={styles.title_item}>
-          <h2>银行支付凭证（支付给承运人的凭证）</h2>
-          <UploadImgModal
-            data={{
-              service_no: props.waybillDetailInfo.waybill_no,
-              service_type: 30010,
-              media_type: 10,
-            }}
-            title="支付凭证"
-            picListShow={getPayImgArr()}
-            delPicUrl="waybill/delpic"
-            flag="payImg"
-            payImg={payImgFromChild}
-            count="16"
-          />
-        </div>
+        {Object.keys(waybillDetailInfo).length && (
+          <>
+            <div className={styles.title_item}>
+              <h2>上传回单</h2>
+              <UploadImgModal
+                data={{
+                  service_no: waybill_no,
+                  service_type: 30010,
+                  media_type: 61,
+                }}
+                title="回单图片"
+                picListShow={showBackImg(
+                  waybillDetailInfo.reply_media,
+                  '回单图片',
+                )}
+                delPicUrl="waybill/delpic"
+                flag="replyImg"
+                replyImg={upLoadSucc}
+                replyImgDel={delImgSucc}
+                count="9"
+              />
+            </div>
+            <div className={styles.title_item}>
+              <h2>上传合同（收票方与承运方签署的）</h2>
+              <UploadImgModal
+                data={{
+                  service_no: waybill_no,
+                  service_type: 30010,
+                  media_type: 21,
+                }}
+                title="合同图片"
+                picListShow={showBackImg(
+                  waybillDetailInfo.contract_media,
+                  '合同图片',
+                )}
+                delPicUrl="waybill/delpic"
+                flag="contractImg"
+                contractImg={upLoadSucc}
+                contractImgDel={delImgSucc}
+                count="9"
+              />
+            </div>
+            <div className={styles.title_item}>
+              <h2>银行支付凭证（支付给承运人的凭证）</h2>
+              <UploadImgModal
+                data={{
+                  service_no: waybill_no,
+                  service_type: 30010,
+                  media_type: 10,
+                }}
+                title="支付凭证"
+                picListShow={showBackImg(
+                  waybillDetailInfo.pay_media,
+                  '支付凭证',
+                )}
+                delPicUrl="waybill/delpic"
+                flag="payImg"
+                payImg={upLoadSucc}
+                payImgDel={delImgSucc}
+                count="16"
+              />
+            </div>
+          </>
+        )}
         <Form.Item
           {...tailLayout}
           style={{ textAlign: 'right', marginBottom: 0 }}

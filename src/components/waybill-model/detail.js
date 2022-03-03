@@ -10,7 +10,7 @@ const IconFont = createFromIconfontCN({
   scriptUrl: ['//at.alicdn.com/t/font_1595958_p5529b5fjfr.js'],
 });
 const namespace = 'waybill';
-const namespace_user = "user";
+const namespace_user = 'user';
 const DescriptionItem = ({ title, content }) => (
   <div className="site-description-item-profile-wrapper">
     <p className="site-description-item-profile-p-label">
@@ -24,7 +24,7 @@ const mapStateToProps = state => {
   let userInfo = state[namespace_user].userInfo;
   return {
     waybillDetailInfo,
-    userInfo
+    userInfo,
   };
 };
 
@@ -42,7 +42,6 @@ const mapDispatchToProps = dispatch => {
 const Details = props => {
   const [isShowMoreImg, setIsShowMoreImg] = useState(false);
   const [showMoreImgArr, setShowMoreImgArr] = useState([]);
-  const [show, setShow] = useState(true);
   const [imgTitle, setImgTitle] = useState('');
   useEffect(() => {
     props.getWaybillDetailFn({ waybill_no: props.waybill_no });
@@ -56,8 +55,8 @@ const Details = props => {
   };
 
   //支付流水或付款信息，子组件传过来的图片
-  const openPreviewImgFromChild = (src,title)=>{
-    openPreviewImg(src,title);
+  const openPreviewImgFromChild = (src, title) => {
+    openPreviewImg(src, title);
   };
 
   //渲染多图列表
@@ -135,7 +134,7 @@ const Details = props => {
         <TabPane
           tab={
             <span>
-              <IconFont type="iconjibenxinxi" style={{fontSize:'18px'}}/>
+              <IconFont type="iconjibenxinxi" style={{ fontSize: '18px' }} />
               基本信息
             </span>
           }
@@ -406,7 +405,10 @@ const Details = props => {
           <TabPane
             tab={
               <span>
-                <IconFont type="iconcheliangxinxi" style={{fontSize:'16px'}}/>
+                <IconFont
+                  type="iconcheliangxinxi"
+                  style={{ fontSize: '16px' }}
+                />
                 车辆信息
               </span>
             }
@@ -627,7 +629,10 @@ const Details = props => {
           <TabPane
             tab={
               <span>
-                <IconFont type="iconchuanboxinxi" style={{fontSize:'18px'}}/>
+                <IconFont
+                  type="iconchuanboxinxi"
+                  style={{ fontSize: '18px' }}
+                />
                 船舶信息
               </span>
             }
@@ -862,13 +867,17 @@ const Details = props => {
         <TabPane
           tab={
             <span>
-              <IconFont type="iconjibenxinxi" style={{fontSize:'18px'}}/>
-              {props.userInfo.PAYMENTREQUIRED != 1?'支付流水':'付款信息'}
+              <IconFont type="iconjibenxinxi" style={{ fontSize: '18px' }} />
+              {props.userInfo.PAYMENTREQUIRED != 1 ? '支付流水' : '付款信息'}
             </span>
           }
           key="3"
         >
-          <PaymentFlow userInfo={props.userInfo} waybill_no={props.waybill_no} openPreviewImg={openPreviewImgFromChild}/>
+          <PaymentFlow
+            userInfo={props.userInfo}
+            waybill_no={props.waybill_no}
+            openPreviewImg={openPreviewImgFromChild}
+          />
         </TabPane>
       </Tabs>
       <Modal
