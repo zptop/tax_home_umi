@@ -156,22 +156,6 @@ const UploadNoRequired = props => {
     props.getPayChannelFn({ name: name || null });
   };
 
-  //子组件传过来的回单图片、合同图片、银行支付凭证
-  const upLoadSucc = obj => {
-    let { flag, picList } = obj;
-    switch (flag) {
-      case 'replyImg':
-        showBackImg(picList, '回单图片');
-        break;
-      case 'contractImg':
-        showBackImg(picList, '合同图片');
-        break;
-      case 'payImg':
-        showBackImg(picList, '支付凭证');
-        break;
-    }
-  };
-
   //删除图片
   const delImgSucc = () => {
     props.getWaybillDetailFn({ waybill_no });
@@ -259,7 +243,6 @@ const UploadNoRequired = props => {
                 )}
                 delPicUrl="waybill/delpic"
                 flag="replyImg"
-                replyImg={upLoadSucc}
                 replyImgDel={delImgSucc}
                 count="9"
               />
@@ -279,7 +262,6 @@ const UploadNoRequired = props => {
                 )}
                 delPicUrl="waybill/delpic"
                 flag="contractImg"
-                contractImg={upLoadSucc}
                 contractImgDel={delImgSucc}
                 count="9"
               />
@@ -299,7 +281,6 @@ const UploadNoRequired = props => {
                 )}
                 delPicUrl="waybill/delpic"
                 flag="payImg"
-                payImg={upLoadSucc}
                 payImgDel={delImgSucc}
                 count="16"
               />

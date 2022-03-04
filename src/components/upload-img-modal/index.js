@@ -50,7 +50,6 @@ const UploadImgModal = props => {
       previewVisible: false,
       fileList: props.picListShow,
     });
-    console.log('props.picListShow:', props.picListShow);
   }, [props.picListShow]);
 
   const handleCancel = () => {
@@ -117,7 +116,7 @@ const UploadImgModal = props => {
               picList.push(item);
             }
           });
-          props[props.flag]({ picList, flag: props.flag }); //子组件通过函数传值到父组件
+          //props[props.flag]({ picList, flag: props.flag }); //子组件通过函数传值到父组件
         }
         setObjState({ ...objState, fileList });
       } else {
