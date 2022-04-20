@@ -83,13 +83,9 @@ const List = props => {
   });
 
   //打开-编辑承运人、承运人详情
-  const handleEditOrDetail = (carrier_uin, flag) => {
+  const handleEdit = carrier_uin => {
     console.log('carrier_uin:', carrier_uin);
-    if (flag == 'editCarrier') {
-      props.getUinOrId({ carrier_uin, title: '编辑承运人' });
-    } else {
-      props.getUinOrId({ carrier_uin, title: '承运人详情' });
-    }
+    props.getUinOrId({ carrier_uin, title: '编辑承运人' });
   };
 
   //车辆管理
@@ -192,7 +188,7 @@ const List = props => {
             <Button
               type="primary"
               disabled={audit_status != 2}
-              onClick={_ => handleEditOrDetail(carrier_uin, 'editCarrier')}
+              onClick={_ => handleEdit(carrier_uin)}
             >
               编辑
             </Button>
@@ -236,7 +232,7 @@ const List = props => {
                 marginRight: '5px',
                 color: '#00b0b5',
               }}
-              onClick={_ => handleEditOrDetail(carrier_uin, 'detailCarrier')}
+              onClick={_ => handleDetail(carrier_uin, 'detailCarrier')}
             >
               {real_name}
             </a>
