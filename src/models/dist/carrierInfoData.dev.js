@@ -239,7 +239,7 @@ var _default = {
         },
         delOrRejectCarrierModel);
       }),
-    //获取承运人或司机详情
+    //获取承运人详情
     getCarrierInfoModel:
       /*#__PURE__*/
       regeneratorRuntime.mark(function getCarrierInfoModel(_ref7, _ref8) {
@@ -267,21 +267,19 @@ var _default = {
         },
         getCarrierInfoModel);
       }),
-    //新增车队老板
-    addCarrierBossModel:
+    //获取司机详情
+    getDriverInfoModel:
       /*#__PURE__*/
-      regeneratorRuntime.mark(function addCarrierBossModel(_ref9, _ref10) {
+      regeneratorRuntime.mark(function getDriverInfoModel(_ref9, _ref10) {
         var value, call, put, res;
-        return regeneratorRuntime.wrap(function addCarrierBossModel$(
-          _context5,
-        ) {
+        return regeneratorRuntime.wrap(function getDriverInfoModel$(_context5) {
           while (1) {
             switch ((_context5.prev = _context5.next)) {
               case 0:
                 value = _ref9.value;
                 (call = _ref10.call), (put = _ref10.put);
                 _context5.next = 4;
-                return call(_carrierInfo.addCarrierBoss, value);
+                return call(_carrierInfo.getDriverInfo, value);
 
               case 4:
                 res = _context5.sent;
@@ -290,6 +288,33 @@ var _default = {
               case 6:
               case 'end':
                 return _context5.stop();
+            }
+          }
+        }, getDriverInfoModel);
+      }),
+    //新增车队老板
+    addCarrierBossModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function addCarrierBossModel(_ref11, _ref12) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function addCarrierBossModel$(
+          _context6,
+        ) {
+          while (1) {
+            switch ((_context6.prev = _context6.next)) {
+              case 0:
+                value = _ref11.value;
+                (call = _ref12.call), (put = _ref12.put);
+                _context6.next = 4;
+                return call(_carrierInfo.addCarrierBoss, value);
+
+              case 4:
+                res = _context6.sent;
+                return _context6.abrupt('return', res);
+
+              case 6:
+              case 'end':
+                return _context6.stop();
             }
           }
         },

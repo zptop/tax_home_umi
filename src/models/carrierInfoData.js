@@ -3,6 +3,7 @@ import {
   getCarrierList,
   delOrRejectCarrier,
   getCarrierInfo,
+  getDriverInfo,
   addCarrierBoss,
 } from '../sevice/carrierInfo';
 import { scanIdCard } from '../util/ocr';
@@ -81,9 +82,15 @@ export default {
       }
     },
 
-    //获取承运人或司机详情
+    //获取承运人详情
     *getCarrierInfoModel({ value }, { call, put }) {
       const res = yield call(getCarrierInfo, value);
+      return res;
+    },
+
+    //获取司机详情
+    *getDriverInfoModel({ value }, { call, put }) {
+      const res = yield call(getDriverInfo, value);
       return res;
     },
 

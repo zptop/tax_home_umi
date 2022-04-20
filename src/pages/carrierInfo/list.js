@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react';
-import { Table, Button, Menu, Modal, Tooltip, Dropdown } from 'antd';
+import {
+  Table,
+  Button,
+  Menu,
+  Modal,
+  Tooltip,
+  Dropdown,
+  Space,
+  Drawer,
+} from 'antd';
 const { confirm } = Modal;
 import { history } from 'umi';
 import {
@@ -7,6 +16,7 @@ import {
   ExclamationCircleFilled,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
+import DeatilMan from './detail-man';
 import styles from './index.less';
 import { connect } from 'dva';
 const namespace = 'carrierInfo';
@@ -27,6 +37,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    //详情
+    getCarrierInfoFn: value => {
+      return dispatch({
+        type: namespace + '/getCarrierInfoModel',
+        value,
+      });
+    },
     getCarrierListFn: value => {
       dispatch({
         type: namespace + '/getCarrierListModel',
@@ -37,15 +54,6 @@ const mapDispatchToProps = dispatch => {
       dispatch({
         type: namespace + '/delOrRejectCarrierModel',
         value,
-      });
-    },
-    scanIdCardFn: value => {
-      dispatch({
-        type: namespace + '/scanIdCardModel',
-        value,
-        callback: res => {
-          console.log('res:', res);
-        },
       });
     },
   };
@@ -61,6 +69,17 @@ const List = props => {
     vehicleAdmin,
     userInfo,
   } = props;
+  const [carrier_uin, setCarrier_uin] = useState('');
+  //抽屉开关-承运人详情
+  const [visibleDrawer, setVisibleDrawer] = useState(false);
+  const handleDetail = carrier_uin => {
+    setCarrier_uin(carrier_uin);
+    setVisibleDrawer(true);
+  };
+  const onCloseDrawer = () => {
+    setVisibleDrawer(false);
+  };
+
   //表格初始化状态
   const [objState, setObjState] = useState({
     pageNum: 1,
@@ -82,7 +101,7 @@ const List = props => {
     };
   });
 
-  //打开-编辑承运人、承运人详情
+  //打开-编辑承运人
   const handleEdit = carrier_uin => {
     console.log('carrier_uin:', carrier_uin);
     props.getUinOrId({ carrier_uin, title: '编辑承运人' });
@@ -232,7 +251,7 @@ const List = props => {
                 marginRight: '5px',
                 color: '#00b0b5',
               }}
-              onClick={_ => handleDetail(carrier_uin, 'detailCarrier')}
+              onClick={_ => handleDetail(carrier_uin)}
             >
               {real_name}
             </a>
@@ -390,6 +409,15 @@ const List = props => {
           onShowSizeChange: onShowSizeChange,
         }}
       />
+      <Drawer
+        title="承运人详情"
+        placement="right"
+        width={986}
+        onClose={onCloseDrawer}
+        visible={visibleDrawer}
+      >
+        <DeatilMan carrier_uin={carrier_uin} />
+      </Drawer>
     </>
   );
 };

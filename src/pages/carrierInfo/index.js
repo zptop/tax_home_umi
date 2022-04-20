@@ -39,7 +39,7 @@ const CarrierInfo = props => {
   const [form] = Form.useForm();
   const [placeholderInput, setPlaceholderInput] = useState('请输入承运人名称');
   const [title, setTitle] = useState('新增车队老板');
-  //获取承运人司机---编辑或详情
+  //获取承运人司机---编辑
   const getUinOrId = value => {
     openAddOrEditManModal();
     setTitle(value.title);
