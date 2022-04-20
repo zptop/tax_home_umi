@@ -13,7 +13,6 @@ export default {
     c_getWaitCarrierList: [], //承运人列表(待处理)
     loading: false, //列表加载状态
     totalNum: 0, //总条数,
-    carrierSubmitDataDetail: {}, //编辑时获取的详情信息（承运人或司机）
   },
   reducers: {
     //loading状态
@@ -43,13 +42,6 @@ export default {
         ...state,
         c_getWaitCarrierList: lists,
         totalNum,
-      };
-    },
-    //编辑时获取的详情信息（承运人或司机）
-    setCarrierSubmitDataDetail(state, action) {
-      return {
-        ...state,
-        carrierSubmitDataDetail: action.payload,
       };
     },
   },
@@ -92,14 +84,7 @@ export default {
     //获取承运人或司机详情
     *getCarrierInfoModel({ value }, { call, put }) {
       const res = yield call(getCarrierInfo, value);
-      if (res.code == 0) {
-        yield put({
-          type: 'setCarrierSubmitDataDetail',
-          payload: res.data,
-        });
-      } else {
-        message.warning(res.msg || '系统错误');
-      }
+      return res;
     },
 
     //新增车队老板

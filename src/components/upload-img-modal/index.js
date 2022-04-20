@@ -50,6 +50,7 @@ const UploadImgModal = props => {
       previewVisible: false,
       fileList: props.picListShow,
     });
+    console.log('picListShow:', props.picListShow);
   }, [props.picListShow]);
 
   const handleCancel = () => {
@@ -85,38 +86,16 @@ const UploadImgModal = props => {
     }
     if (file && file.response) {
       let {
-        response: { code, msg },
+        response: {
+          data: { media_path_source },
+          code,
+          msg,
+        },
       } = file;
       if (code == 0) {
-        if (fileList.length > 0) {
-          setLoading(false);
-          let picList = [];
-          fileList.forEach(item => {
-            if (item.response) {
-              let {
-                response: {
-                  data: {
-                    media_id,
-                    media_path,
-                    media_path_source,
-                    media_thumb,
-                  },
-                },
-              } = item;
-              picList.push({
-                uid: media_id,
-                name: props.title,
-                status: 'done',
-                url: media_path,
-                media_path_source,
-                media_id,
-                thumbUrl: media_thumb,
-              });
-            } else {
-              picList.push(item);
-            }
-          });
-          //props[props.flag]({ picList, flag: props.flag }); //子组件通过函数传值到父组件
+        setLoading(false);
+        if (/^[0-9]*$/.test(props.data.service_no)) {
+          props[props.flag](media_path_source); //子组件通过函数传值到父组件(ocr扫描用)
         }
         setObjState({ ...objState, fileList });
       } else {

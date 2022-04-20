@@ -56,13 +56,7 @@ export default {
           payload: userInfoData,
         });
       } else {
-        message.warning({
-          content: res.msg,
-          duration1,
-          onClose: () => {
-            history.push(`/${routerPush()}`);
-          },
-        });
+        history.push('/login');
       }
     },
 
@@ -84,7 +78,6 @@ export default {
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(({ pathname }) => {
-        console.log('pathname', pathname);
         dispatch({
           type: 'checkLogin',
         });

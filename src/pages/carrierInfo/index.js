@@ -39,7 +39,7 @@ const CarrierInfo = props => {
   const [form] = Form.useForm();
   const [placeholderInput, setPlaceholderInput] = useState('请输入承运人名称');
   const [title, setTitle] = useState('新增车队老板');
-  //获取承运人司机编辑详情
+  //获取承运人司机---编辑或详情
   const getUinOrId = value => {
     openAddOrEditManModal();
     setTitle(value.title);
@@ -56,9 +56,10 @@ const CarrierInfo = props => {
     vehicle_status: '',
   });
 
-  //打开--添加车老板弹框
+  //打开--添加车老板弹框---新增
   const openAddOrEditManModal = () => {
-    ChildAddOrEditRef.current.setAddOrEditManModal();
+    setTitle('新增车队老板');
+    ChildAddOrEditRef.current.setAddOrEditManModal({ carrier_uin: '' });
   };
 
   //选择单号

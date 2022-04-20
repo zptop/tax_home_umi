@@ -175,13 +175,7 @@ var _default = {
                 break;
 
               case 10:
-                _antd.message.warning({
-                  content: res.msg,
-                  duration1: duration1,
-                  onClose: function onClose() {
-                    _umi.history.push('/'.concat((0, _push['default'])()));
-                  },
-                });
+                _umi.history.push('/login');
 
               case 11:
               case 'end':
@@ -232,7 +226,6 @@ var _default = {
         history = _ref7.history;
       history.listen(function(_ref8) {
         var pathname = _ref8.pathname;
-        console.log('pathname', pathname);
         dispatch({
           type: 'checkLogin',
         });

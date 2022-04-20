@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import styles from './index.css';
 const namespace = 'waybill';
 const mapStateToProps = state => {
-  let waybillDetailInfo = state[namespace].waybillNoInfo;
+  let { waybillDetailInfo } = state[namespace];
   return {
     waybillDetailInfo,
   };
@@ -31,85 +31,52 @@ const DescriptionItem = ({ title, content }) => (
 );
 
 const UploadRequired = props => {
-  useEffect(() => {
-    props.getWaybillDetailFn({
-      waybill_no: props.waybill_no,
+  let { waybill_no, waybillDetailInfo } = props;
+  //回显图片
+  const showBackImg = (arr, title) => {
+    const arr_temp = arr.map(item => {
+      return {
+        uid: item.media_id,
+        media_id: item.media_id,
+        name: title,
+        status: 'done',
+        url: item.media_path,
+        thumbUrl: item.media_thumb,
+      };
     });
-  }, [props.waybill_no]);
-
-  //子组件传过来的回单图片
-  const replyImgFromChild = picList => {
-    console.log('picList-reply:', picList);
+    return arr_temp;
   };
 
-  //子组件传过来的合同图片
-  const contractImgFromChild = picList => {
-    console.log('picList-contract:', picList);
+  //删除图片
+  const delImgSucc = () => {
+    props.getWaybillDetailFn({ waybill_no });
   };
 
-  //回单图片
-  const getReplyImgArr = () => {
-    let {
-      waybillDetailInfo,
-      waybillDetailInfo: { reply_media },
-    } = props;
-    let reply_media_temp = [];
-    if (Object.keys(waybillDetailInfo).length && reply_media) {
-      reply_media.forEach(item => {
-        reply_media_temp.push({
-          uid: item.media_id,
-          name: '回单图片',
-          status: 'done',
-          url: item.media_path,
-          thumbUrl: item.media_thumb,
-        });
-      });
-    }
-    return reply_media_temp;
-  };
-
-  //合同图片
-  const getContractImgArr = () => {
-    let {
-      waybillDetailInfo,
-      waybillDetailInfo: { contract_media },
-    } = props;
-    let contract_media_temp = [];
-    if (Object.keys(waybillDetailInfo).length && contract_media) {
-      contract_media.forEach(item => {
-        contract_media_temp.push({
-          uid: item.media_id,
-          name: '合同图片',
-          status: 'done',
-          url: item.media_path,
-          thumbUrl: item.media_thumb,
-        });
-      });
-    }
-    return contract_media_temp;
-  };
+  useEffect(() => {
+    props.getWaybillDetailFn({ waybill_no });
+  }, [waybill_no]);
 
   return (
     <div>
-      {Object.keys(props.waybillDetailInfo).length && (
+      {waybillDetailInfo && Object.keys(waybillDetailInfo).length && (
         <div>
           <Row>
             <Col span={8}>
               <DescriptionItem
                 title="承运人"
-                content={props.waybillDetailInfo.carrier_name}
+                content={waybillDetailInfo.carrier_name}
               />
             </Col>
             <Col span={8}>
               <DescriptionItem
                 title="车牌号/船名"
-                content={props.waybillDetailInfo.trans_vehicle_name}
+                content={waybillDetailInfo.trans_vehicle_name}
               />
             </Col>
             <Col span={8}>
               <DescriptionItem
                 title="驾驶员"
-                content={props.waybillDetailInfo.transport_name}
+                content={waybillDetailInfo.transport_name}
               />
             </Col>
           </Row>
@@ -117,14 +84,17 @@ const UploadRequired = props => {
             <h2>上传回单</h2>
             <UploadImgModal
               data={{
-                service_no: props.waybillDetailInfo.waybill_no,
+                service_no: waybill_no,
                 service_type: 30010,
                 media_type: 61,
               }}
-              picListShow={getReplyImgArr()}
+              picListShow={showBackImg(
+                waybillDetailInfo.reply_media,
+                '回单图片',
+              )}
               delPicUrl="waybill/delpic"
               flag="replyImg"
-              replyImg={replyImgFromChild}
+              replyImgDel={delImgSucc}
               count="9"
             />
           </div>
@@ -132,14 +102,17 @@ const UploadRequired = props => {
             <h2>上传合同（收票方与承运方签署的）</h2>
             <UploadImgModal
               data={{
-                service_no: props.waybillDetailInfo.waybill_no,
+                service_no: waybill_no,
                 service_type: 30010,
                 media_type: 21,
               }}
-              picListShow={getContractImgArr()}
+              picListShow={showBackImg(
+                waybillDetailInfo.contract_media,
+                '合同图片',
+              )}
               delPicUrl="waybill/delpic"
               flag="contractImg"
-              contractImg={contractImgFromChild}
+              payImgDel={delImgSucc}
               count="9"
             />
           </div>

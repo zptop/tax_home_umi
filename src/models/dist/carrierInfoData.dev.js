@@ -69,9 +69,7 @@ var _default = {
     //承运人列表(待处理)
     loading: false,
     //列表加载状态
-    totalNum: 0,
-    //总条数,
-    carrierSubmitDataDetail: {}, //编辑时获取的详情信息（承运人或司机）
+    totalNum: 0, //总条数,
   },
   reducers: {
     //loading状态
@@ -97,15 +95,6 @@ var _default = {
       return _objectSpread({}, state, {
         c_getWaitCarrierList: lists,
         totalNum: totalNum,
-      });
-    },
-    //编辑时获取的详情信息（承运人或司机）
-    setCarrierSubmitDataDetail: function setCarrierSubmitDataDetail(
-      state,
-      action,
-    ) {
-      return _objectSpread({}, state, {
-        carrierSubmitDataDetail: action.payload,
       });
     },
   },
@@ -268,26 +257,9 @@ var _default = {
 
               case 4:
                 res = _context4.sent;
+                return _context4.abrupt('return', res);
 
-                if (!(res.code == 0)) {
-                  _context4.next = 10;
-                  break;
-                }
-
-                _context4.next = 8;
-                return put({
-                  type: 'setCarrierSubmitDataDetail',
-                  payload: res.data,
-                });
-
-              case 8:
-                _context4.next = 11;
-                break;
-
-              case 10:
-                _antd.message.warning(res.msg || '系统错误');
-
-              case 11:
+              case 6:
               case 'end':
                 return _context4.stop();
             }

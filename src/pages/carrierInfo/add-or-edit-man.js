@@ -33,17 +33,10 @@ import UploadImgModal from '@/components/upload-img-modal';
 import styles from './index.less';
 const namespace = 'carrierInfo';
 
-const mapStateToProps = state => {
-  let { carrierSubmitDataDetail } = state[namespace];
-  return {
-    carrierSubmitDataDetail,
-  };
-};
-
 const mapDispatchToProps = dispatch => {
   return {
     getCarrierInfoFn: value => {
-      dispatch({
+      return dispatch({
         type: namespace + '/getCarrierInfoModel',
         value,
       });
@@ -97,7 +90,7 @@ const checkVehicleClass = (rule, value) => {
 };
 
 const AddOrEditMan = props => {
-  let { title, carrierSubmitDataDetail } = props;
+  let { title } = props;
   const dataCarrierUinOrIdRef = useRef('');
   const [form] = Form.useForm(); //新增或编辑表单
   const [isaddOrEditManFlag, setIsaddOrEditManFlag] = useState(false); //新增或编辑弹框
@@ -105,6 +98,7 @@ const AddOrEditMan = props => {
     switchIdChecked: false, //身份证长期
     idExpireDisabled: false, //身份证有效期至是否可选
   });
+  const [carrier_uin, setCarrier_uin] = useState('');
   const [timestamp, setTimestamp] = useState(new Date().getTime());
   //承运人(车老板)、司机(新增和编辑)
   const [carrierSubmitData, setCarrierSubmitData] = useState({
@@ -117,6 +111,8 @@ const AddOrEditMan = props => {
     id_is_long_time: 0, //1: 长期 ; 0:不是长期
     id_pic1: '', //身份证头像页
     id_pic2: '', //身份证国徽页
+    picListShowFront: [],
+    picListShowBack: [],
   });
 
   //驾驶证
@@ -215,105 +211,129 @@ const AddOrEditMan = props => {
   //父组件调用子组件方法
   useImperativeHandle(props.onRef, () => {
     return {
-      setAddOrEditManModal: () => {
+      setAddOrEditManModal: value => {
+        let { carrier_uin } = value;
+        setCarrier_uin(carrier_uin);
         setIsaddOrEditManFlag(true);
       },
       setUinOrId: value => {
         let { carrier_uin } = value;
+        setCarrier_uin(carrier_uin);
         dataCarrierUinOrIdRef.current = carrier_uin;
-        props.getCarrierInfoFn({ carrier_uin });
+        props.getCarrierInfoFn({ carrier_uin }).then(res => {
+          if (res) {
+            let {
+              data: {
+                real_name,
+                mobile,
+                id_card_no,
+                address,
+                lic_issue_name,
+                id_expire,
+                id_pic1,
+                id_pic1_text,
+                id_pic2,
+                id_pic2_text,
+                id_is_long_time,
+              },
+            } = res;
+            setCarrierSubmitData({
+              ...carrierSubmitData,
+              id_pic1,
+              id_pic2,
+              id_is_long_time,
+              picListShowFront: [
+                {
+                  uid: new Date().getTime(),
+                  name: props.title,
+                  status: 'done',
+                  url: id_pic1_text,
+                  media_path_source: id_pic1,
+                  thumbUrl: id_pic1_text,
+                },
+              ],
+              picListShowBack: [
+                {
+                  uid: new Date().getTime(),
+                  name: props.title,
+                  status: 'done',
+                  url: id_pic2_text,
+                  media_path_source: id_pic2,
+                  thumbUrl: id_pic2_text,
+                },
+              ],
+            });
+            form.setFieldsValue({
+              real_name,
+              mobile,
+              id_card_no,
+              address,
+              lic_issue_name,
+              id_expire: moment(formatDateYMD(id_expire), 'YYYY-MM-DD'),
+            });
+          }
+        });
       },
     };
   });
 
-  //身份证头像页详情
-  const getIdPicFront = () => {
-    let { id_pic1, id_pic1_text } = carrierSubmitDataDetail;
-    return [
-      {
-        uid: new Date().getTime(),
-        name: props.title,
-        status: 'done',
-        url: id_pic1_text,
-        media_path_source: id_pic1,
-        thumbUrl: id_pic1_text,
-      },
-    ];
-  };
   //子组件传过来的的身份头像页
-  const rePicFrontFromChild = file => {
-    let { media_path_source } = file[0];
-    props
-      .scanIdCardModelFn({
-        pic_url: media_path_source,
+  const rePicFrontFromChild = async file => {
+    try {
+      const res = await props.scanIdCardModelFn({
+        pic_url: file,
         pic_type: 2,
         scanUrl: '/Ocr/driverCardFrontRecon',
-      })
-      .then(res => {
-        if (res.code == 0) {
-          form.setFieldsValue(res.data);
-          setCarrierSubmitData({
-            ...carrierSubmitData,
-            ...res.data,
-            id_pic1: media_path_source,
-          });
-        } else {
-          message.warning(res.msg || '系统错误');
-        }
       });
+
+      if (res.code == 0) {
+        form.setFieldsValue(res.data);
+        setCarrierSubmitData({
+          ...carrierSubmitData,
+          ...res.data,
+          id_pic1: file,
+        });
+      } else {
+        message.warning(res.msg || '系统错误');
+      }
+    } catch (e) {}
   };
 
-  //身份证国徽页详情
-  const getIdPicBack = () => {
-    let { id_pic2, id_pic2_text } = carrierSubmitDataDetail;
-    return [
-      {
-        uid: new Date().getTime(),
-        name: props.title,
-        status: 'done',
-        url: id_pic2_text,
-        media_path_source: id_pic2,
-        thumbUrl: id_pic2_text,
-      },
-    ];
-  };
   //子组件传过来的的身份证国徽页
-  const rePicBackFromChild = file => {
-    let { media_path_source } = file[0];
-    props
-      .scanIdCardModelFn({
-        pic_url: media_path_source,
+  const rePicBackFromChild = async file => {
+    try {
+      const res = await props.scanIdCardModelFn({
+        pic_url: file,
         pic_type: 3,
         scanUrl: '/Ocr/driverCardBackRecon',
-      })
-      .then(res => {
-        if (res.code == 0) {
-          let { lic_issue_name } = res.data;
-          form.setFieldsValue({
-            lic_issue_name,
-          });
-          if (res.data.id_is_long_time == 1) {
-            setIdExpireObj({
-              ...idExpireObj,
-              switchIdChecked: true,
-              idExpireDisabled: true,
-            });
-          } else {
-            setIdExpireObj({
-              ...idExpireObj,
-              switchIdChecked: false,
-              idExpireDisabled: false,
-            });
-          }
-          setCarrierSubmitData({
-            ...carrierSubmitData,
-            ...res.data,
-            id_pic2: media_path_source,
+      });
+      if (res.code == 0) {
+        let { lic_issue_name } = res.data;
+        form.setFieldsValue({
+          lic_issue_name,
+        });
+        if (res.data.id_is_long_time == 1) {
+          setIdExpireObj({
+            ...idExpireObj,
+            switchIdChecked: true,
+            idExpireDisabled: true,
           });
         } else {
-          message.warning(res.msg || '系统错误');
+          setIdExpireObj({
+            ...idExpireObj,
+            switchIdChecked: false,
+            idExpireDisabled: false,
+          });
         }
-      });
+        setCarrierSubmitData({
+          ...carrierSubmitData,
+          ...res.data,
+          id_pic2: file,
+        });
+      } else {
+        message.warning(res.msg || '系统错误');
+      }
+    } catch (e) {}
   };
 
   const formItemLayout = {
@@ -335,50 +355,10 @@ const AddOrEditMan = props => {
     },
   };
 
-  useEffect(() => {
-    if (isaddOrEditManFlag && carrierSubmitDataDetail) {
-      let {
-        real_name,
-        mobile,
-        id_card_no,
-        address,
-        lic_issue_name,
-        id_expire,
-        id_pic1,
-        id_pic1_text,
-        id_pic2,
-        id_pic2_text,
-        driver_lic_pic,
-        driver_lic_pic_text,
-        driver_lic_side_pic,
-        driver_lic_side_pic_text,
-        driver_name,
-        vehicle_class,
-        driver_issuing_organizations,
-        valid_period_from,
-        valid_period_to,
-        driver_mobile,
-        driver_id,
-        remark,
-        audit_status,
-      } = carrierSubmitDataDetail;
-      setCarrierSubmitData({
-        ...carrierSubmitData,
-        real_name,
-        mobile,
-        id_card_no,
-        address,
-        lic_issue_name,
-        id_expire: moment(id_expire, 'YYYY-MM-DD') || null,
-        id_pic1,
-        id_pic2,
-      });
-    }
-  }, [isaddOrEditManFlag]);
-
   return (
     <>
       <Modal
+        forceRender
         title={title}
         width={638}
         visible={isaddOrEditManFlag}
@@ -391,6 +371,9 @@ const AddOrEditMan = props => {
           onFinish={onFinish}
           scrollToFirstError
           initialValues={{
+            real_name: '',
+            mobile: '',
+            id_card_no: '',
             address: '',
             lic_issue_name: '',
           }}
@@ -405,11 +388,11 @@ const AddOrEditMan = props => {
                     media_type: 201,
                     service_no: timestamp,
                   }}
-                  picListShow={getIdPicFront()}
+                  picListShow={carrierSubmitData.picListShowFront}
                   delPicUrl="waybill/delpic"
                   flag="rePicFront"
                   rePicFront={rePicFrontFromChild}
-                  count="1"
+                  count={1}
                 />
               </Form.Item>
               <Popover
@@ -431,7 +414,7 @@ const AddOrEditMan = props => {
                     media_type: 201,
                     service_no: timestamp,
                   }}
-                  picListShow={getIdPicBack()}
+                  picListShow={carrierSubmitData.picListShowBack}
                   delPicUrl="waybill/delpic"
                   flag="rePicBack"
                   rePicBack={rePicBackFromChild}
@@ -511,11 +494,16 @@ const AddOrEditMan = props => {
                 <Input placeholder="请输入签发机关" />
               </Form.Item>
             </Col>
-            <Col span={24}>
-              <Form.Item label="有效期至" name="id_expire">
-                {idExpireObj.idExpireDisabled ? (
+            <Col span={24} style={{ position: 'relative' }}>
+              {carrierSubmitData.id_is_long_time == 1 ? (
+                <div style={{ marginBottom: '22px' }}>
+                  <div class="ant-col ant-form-item-label ant-col-xs-24 ant-col-sm-6">
+                    <label title="有效期至">有效期至</label>
+                  </div>
                   <div
                     style={{
+                      position: 'relative',
+                      left: '76px',
                       display: 'inline-block',
                       width: '310px',
                       marginRight: '10px',
@@ -526,24 +514,24 @@ const AddOrEditMan = props => {
                   >
                     长期
                   </div>
-                ) : (
+                </div>
+              ) : (
+                <Form.Item label="有效期至" name="id_expire">
                   <DatePicker
                     placeholder="请选择有效期"
                     style={{ width: '310px', marginRight: '10px' }}
                     onChange={changeDatePicker}
-                    value={
-                      carrierSubmitData.id_expire == null
-                        ? null
-                        : moment(carrierSubmitData.id_expire, 'YYYY-MM-DD')
-                    }
                   />
-                )}
+                </Form.Item>
+              )}
+              <div style={{ position: 'absolute', right: '48px', top: '4px' }}>
                 <Switch
+                  size="big"
                   defaultChecked={idExpireObj.switchIdChecked}
                   onChange={changeSwitchIdChecked}
                 />
                 长期
-              </Form.Item>
+              </div>
             </Col>
           </Row>
           <Row className={styles.submit_content_box}>
@@ -557,4 +545,4 @@ const AddOrEditMan = props => {
   );
 };
 const memoAddOrEditMan = React.memo(AddOrEditMan);
-export default connect(mapStateToProps, mapDispatchToProps)(memoAddOrEditMan);
+export default connect(null, mapDispatchToProps)(memoAddOrEditMan);

@@ -1334,6 +1334,7 @@ const WaybillIndex = props => {
 
       {/* 批量付款 */}
       <Modal
+        forceRender
         visible={objState.payMoreModal}
         title="付款确认"
         onCancel={closePayMore}
@@ -1393,7 +1394,7 @@ const WaybillIndex = props => {
                     : `${styles.get_sms}`
                 }
                 disabled={payMore.is_sms_disabled}
-                onclick={getSmsCodeFn}
+                onClick={getSmsCodeFn}
               >
                 {payMore.getBtnText}
               </Button>

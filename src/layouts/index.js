@@ -9,7 +9,6 @@ import children from '../router/children';
 import { connect } from 'dva';
 const { Header, Footer, Sider, Content } = Layout;
 const { SubMenu } = Menu;
-const { TabPane } = Tabs;
 import {
   SettingOutlined,
   MenuUnfoldOutlined,
