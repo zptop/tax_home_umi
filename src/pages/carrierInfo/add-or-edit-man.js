@@ -203,6 +203,8 @@ const AddOrEditMan = props => {
       id_is_long_time: 0,
       id_pic1: '',
       id_pic2: '',
+      picListShowFront: [],
+      picListShowBack: [],
     });
     setIsaddOrEditManFlag(false);
     setTimestamp(new Date().getTime());
@@ -211,9 +213,10 @@ const AddOrEditMan = props => {
   //父组件调用子组件方法
   useImperativeHandle(props.onRef, () => {
     return {
-      setAddOrEditManModal: value => {
+      setAdd: value => {
         let { carrier_uin } = value;
         setCarrier_uin(carrier_uin);
+        closeModal();
         setIsaddOrEditManFlag(true);
       },
       setUinOrId: value => {
