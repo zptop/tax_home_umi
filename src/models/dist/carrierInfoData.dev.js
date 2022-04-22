@@ -67,6 +67,8 @@ var _default = {
     //承运人列表(全部)
     c_getWaitCarrierList: [],
     //承运人列表(待处理)
+    driverList: [],
+    //司机列表
     loading: false,
     //列表加载状态
     totalNum: 0, //总条数,
@@ -94,6 +96,15 @@ var _default = {
         totalNum = _action$payload2.totalNum;
       return _objectSpread({}, state, {
         c_getWaitCarrierList: lists,
+        totalNum: totalNum,
+      });
+    },
+    setDriverList: function setDriverList(state, action) {
+      var _action$payload3 = action.payload,
+        lists = _action$payload3.lists,
+        totalNum = _action$payload3.totalNum;
+      return _objectSpread({}, state, {
+        driverList: lists,
         totalNum: totalNum,
       });
     },
@@ -239,12 +250,12 @@ var _default = {
         },
         delOrRejectCarrierModel);
       }),
-    //获取承运人详情
-    getCarrierInfoModel:
+    //删除或撤回司机
+    delOrRejectDriverModel:
       /*#__PURE__*/
-      regeneratorRuntime.mark(function getCarrierInfoModel(_ref7, _ref8) {
+      regeneratorRuntime.mark(function delOrRejectDriverModel(_ref7, _ref8) {
         var value, call, put, res;
-        return regeneratorRuntime.wrap(function getCarrierInfoModel$(
+        return regeneratorRuntime.wrap(function delOrRejectDriverModel$(
           _context4,
         ) {
           while (1) {
@@ -253,33 +264,54 @@ var _default = {
                 value = _ref7.value;
                 (call = _ref8.call), (put = _ref8.put);
                 _context4.next = 4;
-                return call(_carrierInfo.getCarrierInfo, value);
+                return call(_carrierInfo.delOrRejectDriver, value, value.url);
 
               case 4:
                 res = _context4.sent;
-                return _context4.abrupt('return', res);
 
-              case 6:
+                if (!(res.code == 0)) {
+                  _context4.next = 11;
+                  break;
+                }
+
+                _antd.message.success(res.msg || '删除成功');
+
+                _context4.next = 9;
+                return put({
+                  type: 'getDriverListModel',
+                  value: value,
+                });
+
+              case 9:
+                _context4.next = 12;
+                break;
+
+              case 11:
+                _antd.message.warning(res.msg || '系统错误');
+
+              case 12:
               case 'end':
                 return _context4.stop();
             }
           }
         },
-        getCarrierInfoModel);
+        delOrRejectDriverModel);
       }),
-    //获取司机详情
-    getDriverInfoModel:
+    //获取承运人详情
+    getCarrierInfoModel:
       /*#__PURE__*/
-      regeneratorRuntime.mark(function getDriverInfoModel(_ref9, _ref10) {
+      regeneratorRuntime.mark(function getCarrierInfoModel(_ref9, _ref10) {
         var value, call, put, res;
-        return regeneratorRuntime.wrap(function getDriverInfoModel$(_context5) {
+        return regeneratorRuntime.wrap(function getCarrierInfoModel$(
+          _context5,
+        ) {
           while (1) {
             switch ((_context5.prev = _context5.next)) {
               case 0:
                 value = _ref9.value;
                 (call = _ref10.call), (put = _ref10.put);
                 _context5.next = 4;
-                return call(_carrierInfo.getDriverInfo, value);
+                return call(_carrierInfo.getCarrierInfo, value);
 
               case 4:
                 res = _context5.sent;
@@ -290,31 +322,111 @@ var _default = {
                 return _context5.stop();
             }
           }
-        }, getDriverInfoModel);
+        },
+        getCarrierInfoModel);
       }),
-    //新增车队老板
-    addCarrierBossModel:
+    //司机列表
+    getDriverListModel:
       /*#__PURE__*/
-      regeneratorRuntime.mark(function addCarrierBossModel(_ref11, _ref12) {
+      regeneratorRuntime.mark(function getDriverListModel(_ref11, _ref12) {
         var value, call, put, res;
-        return regeneratorRuntime.wrap(function addCarrierBossModel$(
-          _context6,
-        ) {
+        return regeneratorRuntime.wrap(function getDriverListModel$(_context6) {
           while (1) {
             switch ((_context6.prev = _context6.next)) {
               case 0:
                 value = _ref11.value;
                 (call = _ref12.call), (put = _ref12.put);
                 _context6.next = 4;
-                return call(_carrierInfo.addCarrierBoss, value);
+                return put({
+                  type: 'setLoading',
+                  payload: true,
+                });
 
               case 4:
+                _context6.next = 6;
+                return call(_carrierInfo.getDriverList, value);
+
+              case 6:
                 res = _context6.sent;
-                return _context6.abrupt('return', res);
+
+                if (!(res.code == 0)) {
+                  _context6.next = 13;
+                  break;
+                }
+
+                _context6.next = 10;
+                return put({
+                  type: 'setLoading',
+                  payload: false,
+                });
+
+              case 10:
+                if (!(res.data && res.data.lists.length)) {
+                  _context6.next = 13;
+                  break;
+                }
+
+                _context6.next = 13;
+                return put({
+                  type: 'setDriverList',
+                  payload: res.data,
+                });
+
+              case 13:
+              case 'end':
+                return _context6.stop();
+            }
+          }
+        }, getDriverListModel);
+      }),
+    //获取司机详情
+    getDriverInfoModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function getDriverInfoModel(_ref13, _ref14) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function getDriverInfoModel$(_context7) {
+          while (1) {
+            switch ((_context7.prev = _context7.next)) {
+              case 0:
+                value = _ref13.value;
+                (call = _ref14.call), (put = _ref14.put);
+                _context7.next = 4;
+                return call(_carrierInfo.getDriverInfo, value);
+
+              case 4:
+                res = _context7.sent;
+                return _context7.abrupt('return', res);
 
               case 6:
               case 'end':
-                return _context6.stop();
+                return _context7.stop();
+            }
+          }
+        }, getDriverInfoModel);
+      }),
+    //新增车队老板
+    addCarrierBossModel:
+      /*#__PURE__*/
+      regeneratorRuntime.mark(function addCarrierBossModel(_ref15, _ref16) {
+        var value, call, put, res;
+        return regeneratorRuntime.wrap(function addCarrierBossModel$(
+          _context8,
+        ) {
+          while (1) {
+            switch ((_context8.prev = _context8.next)) {
+              case 0:
+                value = _ref15.value;
+                (call = _ref16.call), (put = _ref16.put);
+                _context8.next = 4;
+                return call(_carrierInfo.addCarrierBoss, value);
+
+              case 4:
+                res = _context8.sent;
+                return _context8.abrupt('return', res);
+
+              case 6:
+              case 'end':
+                return _context8.stop();
             }
           }
         },

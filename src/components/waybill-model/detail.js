@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Modal, Tabs, Button, Image } from 'antd';
-import { formatDateYMD, accMul, accDiv } from '../../util/tools';
+import { formatDateYMD } from '../../util/tools';
 import PaymentFlow from './payment-flow';
 const { TabPane } = Tabs;
 import { connect } from 'dva';

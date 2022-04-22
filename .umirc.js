@@ -5,17 +5,18 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
-  title: false,
-//   proxy: {
-//     '/api': {
-//       target: 'http://dev-invoice.ship56.net',
-//       pathRewrite: { '^/api': '' },
-//       changeOrigin: true,
-//       onProxyReq(proxyReq, req, res) {
-//         proxyReq.setHeader('Access-WR-Token', window.localStorage.getItem('x-auth-token'));
-//       },
-//     },
-//   },
+  exportStatic: {},
+  title: '撮合交易',
+  //   proxy: {
+  //     '/api': {
+  //       target: 'http://dev-invoice.ship56.net',
+  //       pathRewrite: { '^/api': '' },
+  //       changeOrigin: true,
+  //       onProxyReq(proxyReq, req, res) {
+  //         proxyReq.setHeader('Access-WR-Token', window.localStorage.getItem('x-auth-token'));
+  //       },
+  //     },
+  //   },
   theme,
   routes,
 });

@@ -11,10 +11,12 @@
 .search_box form :global .ant-col-3 {
   padding: 0 5px !important;
 }
-.search_box form :global .ant-col-16 {
+.search_box form :global .ant-col-16,
+.search_box form :global .ant-col-13 {
   text-align: right;
 }
-.search_box form :global .ant-col-16 button {
+.search_box form :global .ant-col-16 button,
+.search_box form :global .ant-col-13 button {
   margin-left: 5px;
 }
 .search_box form :global .ant-col-7 {
@@ -22,6 +24,11 @@
 }
 .search_box form :global .ant-col-4 {
   padding-left: 0 !important;
+}
+.driver_img_box {
+  display: inline-block;
+  margin-right: 10px;
+  cursor: pointer;
 }
 .column_carrier button {
   margin: 0 3px;
@@ -50,4 +57,52 @@
 }
 .submit_form :global .ant-form-item-label {
   text-align: left;
+}
+.detail_info_box {
+  color: #3f4a56;
+  font-size: 14px;
+}
+.detail_info_box :global .ant-col-12,
+.detail_info_box :global .ant-col-24 {
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+}
+.detail_info_box :global .ant-col-12 span,
+.detail_info_box :global .ant-col-24 span {
+  display: inline-block;
+  width: 156px;
+  color: #888;
+}
+.detail_info_box :global .ant-col-12 img,
+.detail_info_box :global .ant-col-24 img {
+  width: 120px;
+  height: 68px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.detail_info_box :global .ant-col-12.on,
+.detail_info_box :global .ant-col-24.on {
+  height: 68px;
+}
+.detail_info_box :global .ant-col-12.on span,
+.detail_info_box :global .ant-col-24.on span {
+  position: relative;
+  top: -14px;
+}
+.detail_info_box :global .ant-col-12.on.driver-lice,
+.detail_info_box :global .ant-col-24.on.driver-lice {
+  height: auto;
+  margin: 15px 0 0 0;
+}
+.detail_info_box .split_line {
+  display: flex;
+  align-items: center;
+  height: 16px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #00b0b5;
+  padding: 0 0 0 10px;
+  border-left: 2px solid #00b0b5;
+  margin: 5px 0 10px 0;
 }

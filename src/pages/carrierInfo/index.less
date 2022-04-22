@@ -16,7 +16,8 @@
         padding: 0 5px !important;
       }
 
-      .ant-col-16 {
+      .ant-col-16,
+      .ant-col-13 {
         text-align: right;
 
         button {
@@ -34,7 +35,11 @@
     }
   }
 }
-
+.driver_img_box {
+  display: inline-block;
+  margin-right: 10px;
+  cursor: pointer;
+}
 .column_carrier {
   button {
     margin: 0 3px;
@@ -80,5 +85,59 @@
     .ant-form-item-label {
       text-align: left;
     }
+  }
+}
+
+.detail_info_box {
+  color: #3f4a56;
+  font-size: 14px;
+
+  :global {
+    .ant-col-12,
+    .ant-col-24 {
+      padding: 5px 0;
+
+      span {
+        display: inline-block;
+        width: 156px;
+        color: #888;
+      }
+
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 120px;
+        height: 68px;
+        vertical-align: middle;
+        cursor: pointer;
+      }
+
+      &.on {
+        height: 68px;
+
+        span {
+          position: relative;
+          top: -14px;
+        }
+
+        &.driver-lice {
+          height: auto;
+          margin: 15px 0 0 0;
+        }
+      }
+    }
+  }
+
+  .split_line {
+    display: flex;
+    align-items: center;
+    height: 16px;
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(0, 176, 181, 1);
+    padding: 0 0 0 10px;
+    border-left: 2px solid rgba(0, 176, 181, 1);
+    margin: 5px 0 10px 0;
   }
 }

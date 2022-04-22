@@ -1,7 +1,9 @@
 import { message } from 'antd';
 import {
   getCarrierList,
+  getDriverList,
   delOrRejectCarrier,
+  delOrRejectDriver,
   getCarrierInfo,
   getDriverInfo,
   addCarrierBoss,
@@ -12,6 +14,7 @@ export default {
   state: {
     c_getCarrierList: [], //承运人列表(全部)
     c_getWaitCarrierList: [], //承运人列表(待处理)
+    driverList: [], //司机列表
     loading: false, //列表加载状态
     totalNum: 0, //总条数,
   },
@@ -42,6 +45,16 @@ export default {
       return {
         ...state,
         c_getWaitCarrierList: lists,
+        totalNum,
+      };
+    },
+    setDriverList(state, action) {
+      let {
+        payload: { lists, totalNum },
+      } = action;
+      return {
+        ...state,
+        driverList: lists,
         totalNum,
       };
     },
@@ -82,10 +95,33 @@ export default {
       }
     },
 
+    //删除或撤回司机
+    *delOrRejectDriverModel({ value }, { call, put }) {
+      const res = yield call(delOrRejectDriver, value, value.url);
+      if (res.code == 0) {
+        message.success(res.msg || '删除成功');
+        yield put({ type: 'getDriverListModel', value });
+      } else {
+        message.warning(res.msg || '系统错误');
+      }
+    },
+
     //获取承运人详情
     *getCarrierInfoModel({ value }, { call, put }) {
       const res = yield call(getCarrierInfo, value);
       return res;
+    },
+
+    //司机列表
+    *getDriverListModel({ value }, { call, put }) {
+      yield put({ type: 'setLoading', payload: true });
+      const res = yield call(getDriverList, value);
+      if (res.code == 0) {
+        yield put({ type: 'setLoading', payload: false });
+        if (res.data && res.data.lists.length) {
+          yield put({ type: 'setDriverList', payload: res.data });
+        }
+      }
     },
 
     //获取司机详情

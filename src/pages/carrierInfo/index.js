@@ -28,7 +28,7 @@ const IconFont = createFromIconfontCN({
 import AddOrEditMan from './add-or-edit-man';
 import List from './list';
 import styles from './index.less';
-const CarrierInfo = props => {
+const CarrierInfo = () => {
   const ChildRef = React.createRef();
   const ChildAddOrEditRef = React.createRef();
   const dataRef = useRef('');
@@ -283,5 +283,5 @@ const CarrierInfo = props => {
     </>
   );
 };
-
-export default CarrierInfo;
+const memoCarrierInfo = React.memo(CarrierInfo);
+export default memoCarrierInfo;

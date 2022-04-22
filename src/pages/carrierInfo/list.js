@@ -1,14 +1,5 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react';
-import {
-  Table,
-  Button,
-  Menu,
-  Modal,
-  Tooltip,
-  Dropdown,
-  Space,
-  Drawer,
-} from 'antd';
+import { Table, Button, Menu, Modal, Tooltip, Dropdown, Drawer } from 'antd';
 const { confirm } = Modal;
 import { history } from 'umi';
 import {
@@ -103,7 +94,6 @@ const List = props => {
 
   //打开-编辑承运人
   const handleEdit = carrier_uin => {
-    console.log('carrier_uin:', carrier_uin);
     props.getUinOrId({ carrier_uin, title: '编辑承运人' });
   };
 
@@ -133,7 +123,7 @@ const List = props => {
     this.carrier_uin = carrier_uin;
   };
 
-  //运单列表->更多操作
+  //列表->更多操作
   const menu = (carrier_uin, audit_status) => (
     <Menu onClick={changeMenu.bind(this, carrier_uin, audit_status)}>
       <Menu.Item key="1">删除</Menu.Item>
@@ -161,9 +151,6 @@ const List = props => {
             };
             props.delOrRejectCarrierFn({ carrier_uin, ...params });
           },
-          onCancel() {
-            console.log('Cancel');
-          },
         });
         break;
       case 2:
@@ -182,9 +169,6 @@ const List = props => {
               ...data,
             };
             props.delOrRejectCarrierFn({ carrier_uin, flag, ...params });
-          },
-          onCancel() {
-            console.log('Cancel');
           },
         });
         break;
@@ -416,7 +400,7 @@ const List = props => {
         onClose={onCloseDrawer}
         visible={visibleDrawer}
       >
-        <DeatilMan carrier_uin={carrier_uin} />
+        <DeatilMan carrier_uin={carrier_uin} showType="detailCarrier" />
       </Drawer>
     </>
   );

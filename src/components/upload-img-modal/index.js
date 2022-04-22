@@ -94,8 +94,16 @@ const UploadImgModal = props => {
       } = file;
       if (code == 0) {
         setLoading(false);
-        if (/^[0-9]*$/.test(props.data.service_no)) {
-          props[props.flag](media_path_source); //子组件通过函数传值到父组件(ocr扫描用)
+        let {
+          flag,
+          data: { service_no, isScan },
+        } = props;
+        if (/^[0-9]*$/.test(service_no)) {
+          if (isScan == 'no') {
+            flag(file);
+          } else {
+            props[props.flag](media_path_source); //子组件通过函数传值到父组件(ocr扫描用)
+          }
         }
         setObjState({ ...objState, fileList });
       } else {
@@ -153,13 +161,15 @@ const UploadImgModal = props => {
   const { service_no, ...service_media_type } = props.data;
   const uploadButton = (
     <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      {/* <CloudUploadOutlined style={{ fontSize: '20px' }} /> */}
-      <div style={{ fontSize: '12px' }}>上传</div>
+      {' '}
+      {loading ? <LoadingOutlined /> : <PlusOutlined />}{' '}
+      {/* <CloudUploadOutlined style={{ fontSize: '20px' }} /> */}{' '}
+      <div style={{ fontSize: '12px' }}> 上传 </div>{' '}
     </div>
   );
   return (
     <div>
+      {' '}
       {fileList && (
         <Upload
           action={getBaseUrl() + '/waybill/addpic'}
@@ -175,15 +185,16 @@ const UploadImgModal = props => {
           onChange={handleChange}
           accept="image/*,.pdf"
         >
-          {fileList.length >= props.count * 1 ? null : uploadButton}
+          {' '}
+          {fileList.length >= props.count * 1 ? null : uploadButton}{' '}
         </Upload>
-      )}
+      )}{' '}
       <Modal
         visible={previewVisible}
         title={previewTitle}
         footer={[
           <Button key="关闭" onClick={handleCancel}>
-            关闭
+            关闭{' '}
           </Button>,
         ]}
         onCancel={handleCancel}
@@ -191,8 +202,8 @@ const UploadImgModal = props => {
         <Image
           style={{ width: '100%', cursor: 'pointer' }}
           src={previewImage}
-        />
-      </Modal>
+        />{' '}
+      </Modal>{' '}
     </div>
   );
 };
