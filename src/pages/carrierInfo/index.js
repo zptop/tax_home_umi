@@ -279,6 +279,7 @@ const CarrierInfo = () => {
         title={title}
         onRef={ChildAddOrEditRef}
         addOrEditManCallList={getCarrierListFromAddOrEdit}
+        showType="opCarrier"
       />
     </>
   );

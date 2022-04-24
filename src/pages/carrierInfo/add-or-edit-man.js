@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useImperativeHandle } from 'react';
 import {
   Row,
   Col,
@@ -40,6 +40,12 @@ const mapDispatchToProps = dispatch => {
     getCarrierInfoFn: value => {
       return dispatch({
         type: namespace + '/getCarrierInfoModel',
+        value,
+      });
+    },
+    getDriverInfoFn: value => {
+      return dispatch({
+        type: namespace + '/getDriverInfoModel',
         value,
       });
     },
@@ -92,15 +98,13 @@ const checkVehicleClass = (rule, value) => {
 };
 
 const AddOrEditMan = props => {
-  let { title } = props;
-  const dataCarrierUinOrIdRef = useRef('');
+  let { title, showType } = props;
   const [form] = Form.useForm(); //新增或编辑表单
   const [isaddOrEditManFlag, setIsaddOrEditManFlag] = useState(false); //新增或编辑弹框
   const [idExpireObj, setIdExpireObj] = useState({
     switchIdChecked: false, //身份证长期
     switchDriverChecked: false, //驾驶证长期
   });
-  const [carrier_uin, setCarrier_uin] = useState('');
   const [timestamp, setTimestamp] = useState(new Date().getTime());
   //承运人(车老板)、司机(新增和编辑)
   const [carrierSubmitData, setCarrierSubmitData] = useState({
@@ -161,7 +165,7 @@ const AddOrEditMan = props => {
     });
   };
   const changeDateDriverPicker = (date, dateString) => {
-    setCarrierSubmitData({
+    setDriverIdSubmitData({
       ...driverIdSubmitData,
       valid_period_to: dateString,
     });
@@ -169,14 +173,30 @@ const AddOrEditMan = props => {
 
   //提交表单
   const onFinish = fieldsValue => {
-    let { id_pic1, id_pic2, id_expire, id_is_long_time } = carrierSubmitData;
-    const values = {
-      ...fieldsValue,
-      id_pic1,
-      id_pic2,
-      id_is_long_time,
-      id_expire,
-    };
+    let values = null;
+    if (showType == 'opCarrier') {
+      let { id_is_long_time } = carrierSubmitData;
+      values = {
+        ...fieldsValue,
+        id_is_long_time,
+      };
+    } else {
+      let {
+        driver_lic_is_long_time,
+        driver_name,
+        driver_mobile,
+        driver_id,
+      } = driverIdSubmitData;
+      values = {
+        ...fieldsValue,
+        ...carrierSubmitData,
+        real_name: driver_name,
+        mobile: driver_mobile,
+        id_card_no: driver_id,
+        driver_lic_is_long_time,
+      };
+    }
+
     props
       .addCarrierBossFn(qs.stringify(values))
       .then(res => {
@@ -230,16 +250,19 @@ const AddOrEditMan = props => {
   useImperativeHandle(props.onRef, () => {
     return {
       setAdd: value => {
-        let { carrier_uin } = value;
-        setCarrier_uin(carrier_uin);
         closeModal();
         setIsaddOrEditManFlag(true);
       },
       setUinOrId: async value => {
-        let { carrier_uin } = value;
-        setCarrier_uin(carrier_uin);
-        dataCarrierUinOrIdRef.current = carrier_uin;
-        let res = await props.getCarrierInfoFn({ carrier_uin });
+        setIsaddOrEditManFlag(true);
+        let res = null;
+        if (showType == 'opCarrier') {
+          let { carrier_uin } = value;
+          res = await props.getCarrierInfoFn({ carrier_uin });
+        } else {
+          let { cd_id } = value;
+          res = await props.getDriverInfoFn({ cd_id });
+        }
         if (res) {
           let {
             data: {
@@ -253,14 +276,25 @@ const AddOrEditMan = props => {
               id_pic1_text,
               id_pic2,
               id_pic2_text,
-              id_is_long_time,
+              driver_lic_pic,
+              driver_lic_pic_text,
+              driver_lic_side_pic,
+              driver_lic_side_pic_text,
+              driver_name,
+              vehicle_class,
+              driver_issuing_organizations,
+              valid_period_from,
+              valid_period_to,
+              driver_mobile,
+              driver_id,
+              remark,
+              driver_lic_is_long_time,
+              audit_status,
             },
           } = res;
           setCarrierSubmitData({
             ...carrierSubmitData,
-            id_pic1,
-            id_pic2,
-            id_is_long_time,
+            ...res.data,
             picListShowFront: [
               {
                 uid: new Date().getTime(),
@@ -282,14 +316,63 @@ const AddOrEditMan = props => {
               },
             ],
           });
-          form.setFieldsValue({
-            real_name,
-            mobile,
-            id_card_no,
-            address,
-            lic_issue_name,
-            id_expire: moment(formatDateYMD(id_expire), 'YYYY-MM-DD'),
-          });
+          if (showType == 'opCarrier') {
+            form.setFieldsValue({
+              real_name,
+              mobile,
+              id_card_no,
+              address,
+              lic_issue_name,
+              id_expire: moment(formatDateYMD(id_expire), 'YYYY-MM-DD'),
+            });
+          } else {
+            setDriverIdSubmitData({
+              ...driverIdSubmitData,
+              ...res.data,
+              driverPicListShowFront: [
+                {
+                  uid: new Date().getTime(),
+                  name: props.title,
+                  status: 'done',
+                  url: driver_lic_pic_text,
+                  media_path_source: driver_lic_pic,
+                  thumbUrl: driver_lic_pic_text,
+                },
+              ],
+              driverPicListShowBack: [
+                {
+                  uid: new Date().getTime(),
+                  name: props.title,
+                  status: 'done',
+                  url: driver_lic_side_pic_text,
+                  media_path_source: driver_lic_side_pic,
+                  thumbUrl: driver_lic_side_pic_text,
+                },
+              ],
+            });
+            form.setFieldsValue({
+              real_name: driver_name,
+              mobile: driver_mobile,
+              id_card_no: driver_id,
+              address,
+              lic_issue_name,
+              id_expire: moment(formatDateYMD(id_expire), 'YYYY-MM-DD'),
+              vehicle_class,
+              driver_lic_pic,
+              driver_lic_side_pic,
+              driver_issuing_organizations, //驾驶证发证机关
+              valid_period_from: moment(
+                formatDateYMD(valid_period_from),
+                'YYYY-MM-DD',
+              ), //有限期起
+              valid_period_to: moment(
+                formatDateYMD(valid_period_to),
+                'YYYY-MM-DD',
+              ), //有限期至
+              driver_lic_is_long_time,
+              remark,
+            });
+          }
         }
       },
     };
@@ -421,7 +504,7 @@ const AddOrEditMan = props => {
         onCancel={closeModal}
         footer={null}
       >
-        <Steps current={current}>
+        <Steps current={current} style={{ paddingBottom: '20px' }}>
           {steps.map(item => (
             <Step key={item.title} />
           ))}
@@ -630,7 +713,7 @@ const AddOrEditMan = props => {
                   </Popover>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="驾驶证副页（选填）">
+                  <Form.Item label="驾驶证副页(选填)">
                     <UploadImgModal
                       title="驾驶证副页（选填）"
                       data={{
@@ -717,7 +800,7 @@ const AddOrEditMan = props => {
                       <div
                         style={{
                           position: 'relative',
-                          left: '76px',
+                          left: '36px',
                           display: 'inline-block',
                           width: '310px',
                           marginRight: '10px',
@@ -730,7 +813,7 @@ const AddOrEditMan = props => {
                       </div>
                     </div>
                   ) : (
-                    <Form.Item label="有效期至" name="valid_period_to">
+                    <Form.Item label="驾驶证有限期至" name="valid_period_to">
                       <DatePicker
                         placeholder="请选择有效期"
                         style={{ width: '310px', marginRight: '10px' }}
@@ -752,23 +835,35 @@ const AddOrEditMan = props => {
               </Row>
             </div>
           )}
-          <Row className={styles.submit_content_box}>
-            {current < steps.length - 1 && (
-              <Button type="primary" onClick={() => next()}>
-                下一步
-              </Button>
-            )}
-            {current === steps.length - 1 && (
-              <Button type="primary" htmlType="submit">
+          {showType == 'opCarrier' ? (
+            <Row className={styles.submit_content_box}>
+              <Button
+                style={{ margin: '0 8px' }}
+                type="primary"
+                htmlType="submit"
+              >
                 确定
               </Button>
-            )}
-            {current > 0 && (
-              <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
-                上一步
-              </Button>
-            )}
-          </Row>
+            </Row>
+          ) : (
+            <Row className={styles.submit_content_box}>
+              {current < steps.length - 1 && (
+                <Button type="primary" onClick={() => next()}>
+                  下一步
+                </Button>
+              )}
+              {current > 0 && <Button onClick={() => prev()}>上一步</Button>}
+              {current === steps.length - 1 && (
+                <Button
+                  style={{ margin: '0 8px' }}
+                  type="primary"
+                  htmlType="submit"
+                >
+                  确定
+                </Button>
+              )}
+            </Row>
+          )}
         </Form>
       </Modal>
     </>

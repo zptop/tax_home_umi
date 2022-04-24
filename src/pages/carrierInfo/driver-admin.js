@@ -92,9 +92,9 @@ const DriverAdmin = props => {
   });
 
   //打开-司机弹框---编辑
-  const handleEdit = carrier_uin => {
+  const handleEdit = cd_id => {
     setTitle('编辑司机');
-    ChildAddOrEditRef.current.setUinOrId({ carrier_uin });
+    ChildAddOrEditRef.current.setUinOrId({ cd_id });
   };
 
   //打开--司机弹框---新增
@@ -249,8 +249,8 @@ const DriverAdmin = props => {
           <div className={styles.column_carrier}>
             <Button
               type="primary"
-              disabled={audit_status != 2}
-              onClick={_ => handleEdit(carrier_uin)}
+              disabled={audit_status == 2}
+              onClick={_ => handleEdit(cd_id)}
             >
               编辑
             </Button>
@@ -401,6 +401,7 @@ const DriverAdmin = props => {
         title={title}
         onRef={ChildAddOrEditRef}
         addOrEditManCallList={getCarrierListFromAddOrEdit}
+        showType="opDriver"
       />
       <Drawer
         title="司机详情"
