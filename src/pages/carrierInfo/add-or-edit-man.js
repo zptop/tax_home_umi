@@ -242,6 +242,20 @@ const AddOrEditMan = props => {
       picListShowFront: [],
       picListShowBack: [],
     });
+    setDriverIdSubmitData({
+      ...driverIdSubmitData,
+      driver_name: '', //姓名
+      vehicle_class: '', //准驾车型
+      driver_lic_pic: '',
+      driver_lic_side_pic: '',
+      driver_issuing_organizations: '', //驾驶证发证机关
+      valid_period_from: '', //有限期起
+      valid_period_to: '', //有限期至
+      driver_lic_is_long_time: 0, //1: 长期 ; 0:不是长期
+      driverPicListShowFront: [],
+      driverPicListShowBack: [],
+    });
+    setCurrent(0);
     setIsaddOrEditManFlag(false);
     setTimestamp(new Date().getTime());
   };
