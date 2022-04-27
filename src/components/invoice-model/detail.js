@@ -144,7 +144,6 @@ const Detail = props => {
 
   //搜索
   const onFinish = values => {
-    console.log('values:', values);
     values = {
       ...values,
       page: objState.pageNum,

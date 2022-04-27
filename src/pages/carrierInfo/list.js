@@ -190,7 +190,7 @@ const List = props => {
           <div className={styles.column_carrier}>
             <Button
               type="primary"
-              disabled={audit_status != 2}
+              disabled={audit_status == 2}
               onClick={_ => handleEdit(carrier_uin)}
             >
               编辑
