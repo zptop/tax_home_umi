@@ -59,7 +59,7 @@ const CarrierInfo = () => {
   //打开--添加车老板弹框---新增
   const openAddOrEditManModal = () => {
     setTitle('新增车队老板');
-    ChildAddOrEditRef.current.setAdd({ carrier_uin: '' });
+    ChildAddOrEditRef.current.setAdd();
   };
 
   //选择单号

@@ -94,13 +94,13 @@ const DriverAdmin = props => {
   //打开-司机弹框---编辑
   const handleEdit = cd_id => {
     setTitle('编辑司机');
-    ChildAddOrEditRef.current.setUinOrId({ cd_id });
+    ChildAddOrEditRef.current.setUinOrId({ cd_id, carrier_uin });
   };
 
   //打开--司机弹框---新增
   const openAddDriver = () => {
     setTitle('新增司机');
-    ChildAddOrEditRef.current.setAdd({ carrier_uin: '' });
+    ChildAddOrEditRef.current.setAdd();
   };
 
   //选择单号

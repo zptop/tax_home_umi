@@ -55,6 +55,12 @@ const mapDispatchToProps = dispatch => {
         value,
       });
     },
+    addDriverFn: value => {
+      return dispatch({
+        type: namespace + '/addDriverModel',
+        value,
+      });
+    },
     scanIdCardModelFn: value => {
       return dispatch({
         //dispatch返回的是promise
@@ -91,7 +97,7 @@ const validateId = (rule, value) => {
 
 //校验准驾车型
 const checkVehicleClass = (rule, value) => {
-  if (!isVehicleClass(value)) {
+  if (value && !isVehicleClass(value)) {
     return Promise.reject('准驾车型输入不规范');
   }
   return Promise.resolve();
@@ -108,6 +114,8 @@ const AddOrEditMan = props => {
     switchIdChecked: false, //身份证长期
     switchDriverChecked: false, //驾驶证长期
   });
+  const [carrier_uin, setCarrier_uin] = useState('');
+  const [cd_id, setCd_id] = useState('');
   const [timestamp, setTimestamp] = useState(new Date().getTime());
   //承运人(车老板)、司机(新增和编辑)
   const [carrierSubmitData, setCarrierSubmitData] = useState({
@@ -176,15 +184,16 @@ const AddOrEditMan = props => {
 
   //提交表单--承运人
   const onCarrierFinish = fieldsValue => {
-    dataRef.current = fieldsValue;
-    let values = null;
     if (showType == 'opCarrier') {
       let { id_is_long_time } = carrierSubmitData;
-      values = {
+      let values = {
         ...fieldsValue,
+        id_expire: fieldsValue.id_expire
+          ? fieldsValue['id_expire'].format('YYYY-MM-DD')
+          : '',
         id_is_long_time,
       };
-
+      dataRef.current = values;
       props
         .addCarrierBossFn(qs.stringify(values))
         .then(res => {
@@ -230,13 +239,43 @@ const AddOrEditMan = props => {
     }
   };
   const prev = () => {
-    console.log('current-前:', current);
     setCurrent(current - 1);
   };
 
   //提交表单--司机
   const onDriverFinish = fieldsValue => {
-    //  setCurrent(current + 1);
+    let values = {
+      ...fieldsValue,
+      ...dataRef.current,
+    };
+    console.log('values:', values);
+    return;
+    props
+      .addDriverFn(qs.stringify(values))
+      .then(res => {
+        res
+          .json()
+          .then(data => {
+            if (data.code == 0) {
+              message.success({
+                content: data.msg || '添加成功',
+                duration: 1,
+                onClose: () => {
+                  closeModal();
+                  props.addOrEditManCallList();
+                },
+              });
+            } else {
+              message.warning(data.msg || '系统错误');
+            }
+          })
+          .catch(err => {
+            message.warning(err || '系统错误');
+          });
+      })
+      .catch(err => {
+        message.warning(err || '系统错误');
+      });
   };
 
   //关闭弹框
@@ -286,9 +325,12 @@ const AddOrEditMan = props => {
         let res = null;
         if (showType == 'opCarrier') {
           let { carrier_uin } = value;
+          setCarrier_uin(carrier_uin);
           res = await props.getCarrierInfoFn({ carrier_uin });
         } else {
-          let { cd_id } = value;
+          let { cd_id, carrier_uin } = value;
+          setCarrier_uin(carrier_uin);
+          setCd_id(cd_id);
           res = await props.getDriverInfoFn({ cd_id });
         }
         if (res) {
@@ -431,7 +473,13 @@ const AddOrEditMan = props => {
       }
     } catch (e) {}
   };
-
+  //删除身份证证头像页
+  const rePicFrontDel = () => {
+    setCarrierSubmitData({
+      ...carrierSubmitData,
+      picListShowFront: [],
+    });
+  };
   //子组件传过来的的身份证国徽页
   const rePicBackFromChild = async file => {
     try {
@@ -459,6 +507,14 @@ const AddOrEditMan = props => {
         message.warning(res.msg || '系统错误');
       }
     } catch (e) {}
+  };
+
+  //删除身份证证头像页
+  const rePicBackDel = () => {
+    setCarrierSubmitData({
+      ...carrierSubmitData,
+      picListShowBack: [],
+    });
   };
 
   //子组件传过来的的驾驶证正页
@@ -566,6 +622,7 @@ const AddOrEditMan = props => {
                     delPicUrl="waybill/delvechilePic"
                     flag="rePicFront"
                     rePicFront={rePicFrontFromChild}
+                    rePicFrontDel={rePicFrontDel}
                     count={1}
                   />
                 </Form.Item>
@@ -592,6 +649,7 @@ const AddOrEditMan = props => {
                     delPicUrl="waybill/delvechilePic"
                     flag="rePicBack"
                     rePicBack={rePicBackFromChild}
+                    rePicBackDel={rePicBackDel}
                     count="1"
                   />
                 </Form.Item>
@@ -736,12 +794,11 @@ const AddOrEditMan = props => {
           onFinish={onDriverFinish}
           scrollToFirstError
           initialValues={{
-            real_name: '',
-            mobile: '',
-            id_card_no: '',
-            address: '',
-            lic_issue_name: '',
-            id_expire: null,
+            driver_name: '',
+            driver_issuing_organizations: '',
+            vehicle_class: '',
+            valid_period_from: '',
+            valid_period_to: '',
           }}
         >
           <div>
@@ -802,19 +859,7 @@ const AddOrEditMan = props => {
             </Row>
             <Row className={styles.submit_form}>
               <Col span={24}>
-                <Form.Item
-                  label="姓名"
-                  name="driver_name"
-                  rules={[
-                    {
-                      required: true,
-                      message: '姓名未输入',
-                    },
-                    {
-                      validator: checkName,
-                    },
-                  ]}
-                >
+                <Form.Item label="姓名" name="driver_name">
                   <Input placeholder="请输入姓名" />
                 </Form.Item>
               </Col>
@@ -852,7 +897,7 @@ const AddOrEditMan = props => {
                 {driverIdSubmitData.driver_lic_is_long_time == 1 ? (
                   <div style={{ marginBottom: '22px' }}>
                     <div class="ant-col ant-form-item-label ant-col-xs-24 ant-col-sm-6">
-                      <label title="驾驶证有限期至">驾驶证有限期至</label>
+                      <label title="驾驶证有限期止">驾驶证有限期止</label>
                     </div>
                     <div
                       style={{
@@ -870,7 +915,7 @@ const AddOrEditMan = props => {
                     </div>
                   </div>
                 ) : (
-                  <Form.Item label="驾驶证有限期至" name="valid_period_to">
+                  <Form.Item label="驾驶证有限期止" name="valid_period_to">
                     <DatePicker
                       placeholder="请选择有效期"
                       style={{ width: '310px', marginRight: '10px' }}

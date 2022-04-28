@@ -7,6 +7,7 @@ import {
   getCarrierInfo,
   getDriverInfo,
   addCarrierBoss,
+  addDriver,
 } from '../sevice/carrierInfo';
 import { scanIdCard } from '../util/ocr';
 export default {
@@ -109,6 +110,12 @@ export default {
     //获取承运人详情
     *getCarrierInfoModel({ value }, { call, put }) {
       const res = yield call(getCarrierInfo, value);
+      return res;
+    },
+
+    //新增司机
+    *addDriverModel({ value }, { call, put }) {
+      const res = yield call(addDriver, value);
       return res;
     },
 

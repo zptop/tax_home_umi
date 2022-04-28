@@ -136,8 +136,11 @@ const UploadImgModal = props => {
           }
         });
       } else {
+        props[props.flag + 'Del']({ media_id, flag: props.flag });
+      }
+      if (props.delPicUrl == 'waybill/delvechilePic') {
         //删除车辆图片
-        props.delImgFromVehicleFn({ media_id });
+        props[props.flag + 'Del']({ media_id, flag: props.flag });
       }
     }
   };
