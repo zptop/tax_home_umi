@@ -152,7 +152,7 @@ const CarrierInfo = () => {
           }}
         >
           <Col span={4} style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Select defaultValue="0" onChange={selectedNo}>
+            <Select onChange={selectedNo}>
               <Select.Option value="0">承运人名称</Select.Option>
               <Select.Option value="1">承运人手机</Select.Option>
               <Select.Option value="2">司机姓名</Select.Option>

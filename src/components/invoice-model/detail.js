@@ -136,7 +136,7 @@ const Detail = props => {
 
   //选择运单号、客户销项发票单号
   const numSelector = (
-    <Select defaultValue="0" onChange={selectedNo} style={{ width: '100%' }}>
+    <Select onChange={selectedNo} style={{ width: '100%' }}>
       <Select.Option value="0">运单编号</Select.Option>
       <Select.Option value="1">客户销项发票单号</Select.Option>
     </Select>
@@ -591,7 +591,7 @@ const Detail = props => {
           </Col>
           <Col span={3}>
             <Form.Item name="waybill_status">
-              <Select defaultValue="100" style={{ width: '100%' }}>
+              <Select style={{ width: '100%' }}>
                 <Select.Option value="100">选择审核状态</Select.Option>
                 <Select.Option value="200">全部</Select.Option>
                 <Select.Option value="2">审核通过</Select.Option>

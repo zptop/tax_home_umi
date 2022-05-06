@@ -789,7 +789,7 @@ const FormIndex = props => {
       ]}
       className={styles.select_after}
     >
-      <Select placeholder="请选择" defaultValue="0">
+      <Select placeholder="请选择">
         <Select.Option value="0">吨</Select.Option>
         <Select.Option value="1">纸箱</Select.Option>
         <Select.Option value="2">木箱</Select.Option>
@@ -1186,7 +1186,7 @@ const FormIndex = props => {
             </Row>
 
             <Row>
-              <Col span={24} style={{ 'padding-top': '20px' }}>
+              <Col span={24} style={{ paddingTop: '20px' }}>
                 <Button type="primary" htmlType="submit">
                   保存信息
                 </Button>

@@ -129,12 +129,12 @@ const AuditList = props => {
 
   //选择运单号、客户销项发票单号
   const numSelector = (
-    <Select defaultValue="0" onChange={selectedNo} style={{ width: '100%' }}>
-      <Select.Option value="0">运单编号</Select.Option>
-      <Select.Option value="1">申请单编号</Select.Option>
-      <Select.Option value="2">承运人</Select.Option>
-      <Select.Option value="3">收款人</Select.Option>
-      <Select.Option value="4">车牌号/船名</Select.Option>
+    <Select onChange={selectedNo} style={{ width: '100%' }}>
+      <Select.Option value="0"> 运单编号 </Select.Option>{' '}
+      <Select.Option value="1"> 申请单编号 </Select.Option>{' '}
+      <Select.Option value="2"> 承运人 </Select.Option>{' '}
+      <Select.Option value="3"> 收款人 </Select.Option>{' '}
+      <Select.Option value="4"> 车牌号 / 船名 </Select.Option>{' '}
     </Select>
   );
 
@@ -290,7 +290,7 @@ const AuditList = props => {
             style={{ color: '#00b0b5', border: 0, textDecoration: 'underline' }}
             onClick={() => openWaybillDetail(waybill_no)}
           >
-            {waybill_no}
+            {waybill_no}{' '}
           </a>
         );
       },
@@ -333,7 +333,7 @@ const AuditList = props => {
               borderColor: waybill_status_color,
             }}
           >
-            {applypay_status_desc}
+            {applypay_status_desc}{' '}
           </span>
         );
       },
@@ -361,28 +361,27 @@ const AuditList = props => {
                 addonBefore={numSelector}
                 style={{ width: '100%' }}
                 placeholder={placeholderInput}
-              />
-            </Form.Item>
-          </Col>
+              />{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Button type="primary" htmlType="submit">
-              搜索
-            </Button>
+              搜索{' '}
+            </Button>{' '}
             <Button htmlType="button" onClick={handleSearchReset}>
-              重置
-            </Button>
-          </Col>
+              重置{' '}
+            </Button>{' '}
+          </Col>{' '}
           {props.flag == 'wait_list' && (
             <Col span={16}>
               <Button type="primary" onClick={handleAudit1}>
-                审核通过
-              </Button>
-              <Button onClick={handleAudit2}>审核不通过</Button>
+                审核通过{' '}
+              </Button>{' '}
+              <Button onClick={handleAudit2}> 审核不通过 </Button>{' '}
             </Col>
-          )}
-        </Form>
+          )}{' '}
+        </Form>{' '}
       </Row>
-
       <Table
         rowSelection={props.flag == 'wait_list' && rowSelection}
         columns={columns}
@@ -400,8 +399,7 @@ const AuditList = props => {
           onShowSizeChange: onShowSizeChange,
         }}
       />
-
-      {/*运单详情*/}
+      {/*运单详情*/}{' '}
       <Drawer
         title="运单详情"
         placement="right"
@@ -410,10 +408,9 @@ const AuditList = props => {
         onClose={onCloseDetailDrawer}
         visible={objState.isDetailDrawer}
       >
-        <Details waybill_no={waybillNo} />
+        <Details waybill_no={waybillNo} />{' '}
       </Drawer>
-
-      {/*审核不通过原因*/}
+      {/*审核不通过原因*/}{' '}
       <Modal
         visible={remarkModal}
         title="备注"
@@ -437,15 +434,15 @@ const AuditList = props => {
             ]}
           >
             <Input.TextArea placeholder="请输入审核不通过原因" />
-          </Form.Item>
+          </Form.Item>{' '}
           <Button htmlType="button" onClick={remarkCancel}>
-            关闭
-          </Button>
+            关闭{' '}
+          </Button>{' '}
           <Button type="primary" htmlType="submit">
-            确定
-          </Button>
-        </Form>
-      </Modal>
+            确定{' '}
+          </Button>{' '}
+        </Form>{' '}
+      </Modal>{' '}
     </>
   );
 };

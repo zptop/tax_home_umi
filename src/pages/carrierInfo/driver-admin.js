@@ -346,7 +346,7 @@ const DriverAdmin = props => {
           }}
         >
           <Col span={4} style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Select defaultValue="0" onChange={selectedNo}>
+            <Select onChange={selectedNo}>
               <Select.Option value="0">司机名称</Select.Option>
               <Select.Option value="1">司机手机号</Select.Option>
             </Select>

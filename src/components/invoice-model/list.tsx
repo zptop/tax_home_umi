@@ -292,7 +292,7 @@ const List = props => {
               <Col span={8}>
                 <Form.Item name="carrier_status">
                   <Input.Group compact>
-                    <Select defaultValue="0" onChange={selectNum}>
+                    <Select onChange={selectNum}>
                       <Select.Option value="0">开票申请单号</Select.Option>
                       <Select.Option value="1">发票号码</Select.Option>
                       <Select.Option value="2">运单编号</Select.Option>
@@ -308,7 +308,7 @@ const List = props => {
                 <RangePicker />
               </Col>
               <Col span={4}>
-                <Select defaultValue="100" onChange={selectDate}>
+                <Select onChange={selectDate}>
                   <Option value="100">选择申请单状态</Option>
                   <Option value="200">全部</Option>
                   <Option value="1">待支付税金</Option>

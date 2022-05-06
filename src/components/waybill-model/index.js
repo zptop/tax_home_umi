@@ -627,12 +627,12 @@ const WaybillIndex = props => {
   //运单列表->更多操作
   const menu = (waybill_no, waybill_candelete) => (
     <Menu onClick={changeMenu.bind(this, waybill_no, waybill_candelete)}>
-      <Menu.Item key="1">付款</Menu.Item>
-      <Menu.Item key="2">费用明细 </Menu.Item>
+      <Menu.Item key="1"> 付款 </Menu.Item>{' '}
+      <Menu.Item key="2"> 费用明细 </Menu.Item>{' '}
       <Menu.Item key="3" className={waybill_candelete != 1 && styles.del_grey}>
-        删除
-      </Menu.Item>
-      <Menu.Item key="4">复制运单</Menu.Item>
+        删除{' '}
+      </Menu.Item>{' '}
+      <Menu.Item key="4"> 复制运单 </Menu.Item>{' '}
     </Menu>
   );
 
@@ -856,11 +856,15 @@ const WaybillIndex = props => {
   //批量操作
   const batchMenu = (
     <Menu onClick={handleMenuClick}>
-      {userInfo.PAYMENTREQUIRED == 1 && <Menu.Item key="1">批量付款</Menu.Item>}
-      {transportType == 1 && <Menu.Item key="2">批量导入运单</Menu.Item>}
-      <Menu.Item key="3">批量删除运单</Menu.Item>
+      {' '}
+      {userInfo.PAYMENTREQUIRED == 1 && (
+        <Menu.Item key="1"> 批量付款 </Menu.Item>
+      )}{' '}
+      {transportType == 1 && <Menu.Item key="2"> 批量导入运单 </Menu.Item>}{' '}
+      <Menu.Item key="3"> 批量删除运单 </Menu.Item>{' '}
     </Menu>
   );
+
   function handleMenuClick(e) {
     switch (Number(e.key)) {
       case 1:
@@ -878,10 +882,11 @@ const WaybillIndex = props => {
   //导出操作
   const exportMenu = (
     <Menu onClick={handleExportMenu}>
-      <Menu.Item key="1">导出</Menu.Item>
-      <Menu.Item key="2">导出任务</Menu.Item>
+      <Menu.Item key="1"> 导出 </Menu.Item>{' '}
+      <Menu.Item key="2"> 导出任务 </Menu.Item>{' '}
     </Menu>
   );
+
   function handleExportMenu(e) {
     switch (e.key * 1) {
       case 1:
@@ -930,32 +935,31 @@ const WaybillIndex = props => {
                 });
               }}
             >
-              编辑
-            </Button>
+              编辑{' '}
+            </Button>{' '}
             <Button
               type="primary"
               disabled={waybill_editable != 1}
               onClick={() => showUpModal(waybill_no)}
             >
-              上传资料
-            </Button>
+              上传资料{' '}
+            </Button>{' '}
             {userInfo.PAYMENTREQUIRED == 1 && userInfo.CONTRACTSIGN == 1 && (
               <Button
                 type="primary"
                 onClick={() => handleRowContract(waybill_no)}
               >
-                合同管理
+                合同管理{' '}
               </Button>
-            )}
+            )}{' '}
             <Dropdown
               overlay={menu(waybill_no, waybill_candelete)}
               trigger={['click']}
             >
               <Button>
-                更多
-                <DownOutlined />
-              </Button>
-            </Dropdown>
+                更多 <DownOutlined />
+              </Button>{' '}
+            </Dropdown>{' '}
           </div>
         );
       },
@@ -970,13 +974,13 @@ const WaybillIndex = props => {
               style={{ textDecoration: 'underline' }}
               onClick={() => openWaybillDetail(row.waybill_no)}
             >
-              {row.waybill_no}
-            </a>
+              {row.waybill_no}{' '}
+            </a>{' '}
             {row.pending_status_desc && (
               <Tooltip placement="right" title={row.pending_status_desc}>
                 <ExclamationCircleFilled />
               </Tooltip>
-            )}
+            )}{' '}
           </div>
         );
       },
@@ -1007,14 +1011,14 @@ const WaybillIndex = props => {
       title: '提货时间',
       width: 90,
       render: (text, record, index) => {
-        return <div>{formatDateYMD(record.load_time)}</div>;
+        return <div> {formatDateYMD(record.load_time)} </div>;
       },
     },
     {
       title: '到货时间',
       width: 90,
       render: (text, record, index) => {
-        return <div>{formatDateYMD(record.unload_time)}</div>;
+        return <div> {formatDateYMD(record.unload_time)} </div>;
       },
     },
     {
@@ -1030,21 +1034,21 @@ const WaybillIndex = props => {
       title: '含税开票金额(元)',
       width: 100,
       render: (text, record, index) => {
-        return <div>{accDiv(record.invoice_amount, 100).toFixed(2)}</div>;
+        return <div> {accDiv(record.invoice_amount, 100).toFixed(2)} </div>;
       },
     },
     {
       title: '应付税金(元)',
       width: 100,
       render: (text, record, index) => {
-        return <div>{accDiv(record.taxable_amount, 100).toFixed(2)}</div>;
+        return <div> {accDiv(record.taxable_amount, 100).toFixed(2)} </div>;
       },
     },
     {
       title: '撮合服务费(元)',
       width: 100,
       render: (text, record, index) => {
-        return <div>{accDiv(record.svr_fee, 100).toFixed(2)}</div>;
+        return <div> {accDiv(record.svr_fee, 100).toFixed(2)} </div>;
       },
     },
 
@@ -1066,9 +1070,10 @@ const WaybillIndex = props => {
         return (
           <div>
             <span style={{ verticalAlign: 'middle' }}>
-              {waybill_status_text}
-            </span>
-            {waybill_status == 200 ? tooltip : ''}
+              {' '}
+              {waybill_status_text}{' '}
+            </span>{' '}
+            {waybill_status == 200 ? tooltip : ''}{' '}
           </div>
         );
       },
@@ -1102,170 +1107,164 @@ const WaybillIndex = props => {
       >
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col span={4} style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Select
-              defaultValue="0"
-              style={{ width: 120 }}
-              onChange={selectNum}
-            >
-              <Select.Option value="0">运单编号</Select.Option>
+            <Select style={{ width: 120 }} onChange={selectNum}>
+              <Select.Option value="0"> 运单编号 </Select.Option>{' '}
               <Select.Option value="1">
-                {transportType == '1' ? '车牌号' : '船名'}
-              </Select.Option>
-              <Select.Option value="2">承运人身份证</Select.Option>
-              <Select.Option value="3">发票号码</Select.Option>
-              <Select.Option value="4">客户订单号</Select.Option>
-              <Select.Option value="5">承运人姓名</Select.Option>
+                {' '}
+                {transportType == '1' ? '车牌号' : '船名'}{' '}
+              </Select.Option>{' '}
+              <Select.Option value="2"> 承运人身份证 </Select.Option>{' '}
+              <Select.Option value="3"> 发票号码 </Select.Option>{' '}
+              <Select.Option value="4"> 客户订单号 </Select.Option>{' '}
+              <Select.Option value="5"> 承运人姓名 </Select.Option>{' '}
               {transportType == '1' && (
-                <Select.Option value="6">司机姓名</Select.Option>
-              )}
-              <Select.Option value="7">客户销项发票单号</Select.Option>
-            </Select>
+                <Select.Option value="6"> 司机姓名 </Select.Option>
+              )}{' '}
+              <Select.Option value="7"> 客户销项发票单号 </Select.Option>{' '}
+            </Select>{' '}
             <Form.Item name={objState.searchName}>
               <Input />
-            </Form.Item>
-          </Col>
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={5}>
-            <Select
-              defaultValue="0"
-              style={{ width: 100 }}
-              onChange={selectDate}
-            >
-              <Select.Option value="0">提货时间</Select.Option>
-              <Select.Option value="1">到货时间</Select.Option>
-              <Select.Option value="2">开票日期</Select.Option>
-              <Select.Option value="3">审核通过时间</Select.Option>
-            </Select>
+            <Select style={{ width: 100 }} onChange={selectDate}>
+              <Select.Option value="0"> 提货时间 </Select.Option>{' '}
+              <Select.Option value="1"> 到货时间 </Select.Option>{' '}
+              <Select.Option value="2"> 开票日期 </Select.Option>{' '}
+              <Select.Option value="3"> 审核通过时间 </Select.Option>{' '}
+            </Select>{' '}
             <Form.Item
               {...rangeConfig}
               style={{ display: 'inline-block', width: 201 }}
             >
-              <RangePicker key={chooseTime.timeRest} onChange={checkDate} />
-            </Form.Item>
-          </Col>
+              <RangePicker key={chooseTime.timeRest} onChange={checkDate} />{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="carrier_status">
               <Select>
-                <Select.Option value="">是否指定承运人</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="1">待指定</Select.Option>
-                <Select.Option value="2">已指定</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 是否指定承运人 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="1"> 待指定 </Select.Option>{' '}
+                <Select.Option value="2"> 已指定 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="invoice_status">
               <Select>
-                <Select.Option value="">选择开票状态</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="3">不满足开票条件</Select.Option>
-                <Select.Option value="1">未开票</Select.Option>
-                <Select.Option value="2">已开票</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 选择开票状态 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="3"> 不满足开票条件 </Select.Option>{' '}
+                <Select.Option value="1"> 未开票 </Select.Option>{' '}
+                <Select.Option value="2"> 已开票 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="business_flag_7">
               <Select>
-                <Select.Option value="">选择资料上传状态</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="0">未上传</Select.Option>
-                <Select.Option value="1">已上传</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 选择资料上传状态 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="0"> 未上传 </Select.Option>{' '}
+                <Select.Option value="1"> 已上传 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={2.5}>
             <Form.Item name="waybill_status">
               <Select>
-                <Select.Option value="">运单审核状态</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="9">待提交审核</Select.Option>
-                <Select.Option value="1">审核中</Select.Option>
-                <Select.Option value="2">审核通过</Select.Option>
-                <Select.Option value="3">审核不通过</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 运单审核状态 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="9"> 待提交审核 </Select.Option>{' '}
+                <Select.Option value="1"> 审核中 </Select.Option>{' '}
+                <Select.Option value="2"> 审核通过 </Select.Option>{' '}
+                <Select.Option value="3"> 审核不通过 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="carrier_audit_status">
               <Select>
-                <Select.Option value="">承运人审核状态</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="1">审核中</Select.Option>
-                <Select.Option value="2">审核通过</Select.Option>
-                <Select.Option value="3">审核不通过</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 承运人审核状态 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="1"> 审核中 </Select.Option>{' '}
+                <Select.Option value="2"> 审核通过 </Select.Option>{' '}
+                <Select.Option value="3"> 审核不通过 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           {transportType == '1' && (
             <Col span={3}>
               <Form.Item name="driver_audit_status">
                 <Select>
-                  <Select.Option value="">司机审核状态</Select.Option>
-                  <Select.Option value="200">全部</Select.Option>
-                  <Select.Option value="1">审核中</Select.Option>
-                  <Select.Option value="2">审核通过</Select.Option>
-                  <Select.Option value="3">审核不通过</Select.Option>
-                </Select>
-              </Form.Item>
+                  <Select.Option value=""> 司机审核状态 </Select.Option>{' '}
+                  <Select.Option value="200"> 全部 </Select.Option>{' '}
+                  <Select.Option value="1"> 审核中 </Select.Option>{' '}
+                  <Select.Option value="2"> 审核通过 </Select.Option>{' '}
+                  <Select.Option value="3"> 审核不通过 </Select.Option>{' '}
+                </Select>{' '}
+              </Form.Item>{' '}
             </Col>
-          )}
+          )}{' '}
           <Col span={3}>
             <Form.Item name="vehicle_audit_status">
               <Select>
                 <Select.Option value="">
-                  {transportType == '1' ? '车辆审核状态' : '船舶审核状态'}
-                </Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="1">审核中</Select.Option>
-                <Select.Option value="2">审核通过</Select.Option>
-                <Select.Option value="3">审核不通过</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                  {' '}
+                  {transportType == '1' ? '车辆审核状态' : '船舶审核状态'}{' '}
+                </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="1"> 审核中 </Select.Option>{' '}
+                <Select.Option value="2"> 审核通过 </Select.Option>{' '}
+                <Select.Option value="3"> 审核不通过 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="business_flag_5">
               <Select>
-                <Select.Option value="">选择费用明细录入状态</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="0">未录入</Select.Option>
-                <Select.Option value="1">已录入</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 选择费用明细录入状态 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="0"> 未录入 </Select.Option>{' '}
+                <Select.Option value="1"> 已录入 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="business_flag_34">
               <Select>
-                <Select.Option value="">选择合同签署状态</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="1">未签署</Select.Option>
-                <Select.Option value="2">待承运人确认</Select.Option>
-                <Select.Option value="3">已签署</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 选择合同签署状态 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="1"> 未签署 </Select.Option>{' '}
+                <Select.Option value="2"> 待承运人确认 </Select.Option>{' '}
+                <Select.Option value="3"> 已签署 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="carrier_pay_flag">
               <Select>
-                <Select.Option value="">选择结算状态</Select.Option>
-                <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="0">待结清</Select.Option>
-                <Select.Option value="1">已结清</Select.Option>
-                <Select.Option value="2">可支付</Select.Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Select.Option value=""> 选择结算状态 </Select.Option>{' '}
+                <Select.Option value="200"> 全部 </Select.Option>{' '}
+                <Select.Option value="0"> 待结清 </Select.Option>{' '}
+                <Select.Option value="1"> 已结清 </Select.Option>{' '}
+                <Select.Option value="2"> 可支付 </Select.Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Button type="primary" htmlType="submit">
-              搜索
-            </Button>
+              搜索{' '}
+            </Button>{' '}
             <Button
               icon={<RetweetOutlined />}
               htmlType="button"
               onClick={onReset}
             >
-              重置
-            </Button>
-          </Col>
+              重置{' '}
+            </Button>{' '}
+          </Col>{' '}
           <Col span={6}>
             <Button
               type="primary"
@@ -1280,25 +1279,24 @@ const WaybillIndex = props => {
                 });
               }}
             >
-              新增
-            </Button>
+              新增{' '}
+            </Button>{' '}
             {userInfo.FROMAPI != 1 && (
               <Dropdown overlay={batchMenu} trigger={['click']}>
                 <Button type="primary">
                   批量操作 <DownOutlined />
-                </Button>
+                </Button>{' '}
               </Dropdown>
             )}
-
-            {/* <Button icon={<DownloadOutlined />}>导出</Button> */}
+            {/* <Button icon={<DownloadOutlined />}>导出</Button> */}{' '}
             <Dropdown overlay={exportMenu} trigger={['click']}>
               <Button type="primary">
                 导出操作 <DownOutlined />
-              </Button>
-            </Dropdown>
-          </Col>
-        </Row>
-      </Form>
+              </Button>{' '}
+            </Dropdown>{' '}
+          </Col>{' '}
+        </Row>{' '}
+      </Form>{' '}
       <Table
         rowSelection={rowSelection}
         columns={columns}
@@ -1316,23 +1314,26 @@ const WaybillIndex = props => {
           onChange: pageChange,
           onShowSizeChange: onShowSizeChange,
         }}
-      />
+      />{' '}
       <Row style={{ position: 'absolute', bottom: '6px' }}>
         <Col span={24}>
+          {' '}
           {userInfo.PAYMENTREQUIRED == 1 && (
-            <span>当前已勾选的运单累计待付：￥{amount.total_wait_pay}，</span>
-          )}
-          <span>钱包可用余额：￥{amount.available_amount}</span>
-        </Col>
+            <span>
+              {' '}
+              当前已勾选的运单累计待付：￥ {amount.total_wait_pay}，{' '}
+            </span>
+          )}{' '}
+          <span> 钱包可用余额：￥ {amount.available_amount} </span>{' '}
+        </Col>{' '}
         <Col span={24}>
           <span>
-            当前筛选条件合计：待付运输劳务费￥{amount.total_wait_amount}
-            ，总运输劳务费：￥{amount.total_labour_amount}
-          </span>
-        </Col>
+            当前筛选条件合计： 待付运输劳务费￥ {amount.total_wait_amount}，
+            总运输劳务费：￥ {amount.total_labour_amount}{' '}
+          </span>{' '}
+        </Col>{' '}
       </Row>
-
-      {/* 批量付款 */}
+      {/* 批量付款 */}{' '}
       <Modal
         forceRender
         visible={objState.payMoreModal}
@@ -1340,10 +1341,10 @@ const WaybillIndex = props => {
         onCancel={closePayMore}
         footer={[
           <Button key="back" onClick={closePayMore}>
-            关闭
+            关闭{' '}
           </Button>,
           <Button key="submit" onClick={subPayMoreFn}>
-            提交
+            提交{' '}
           </Button>,
         ]}
       >
@@ -1357,10 +1358,11 @@ const WaybillIndex = props => {
           }}
         >
           <Form.Item label="符合付款运单数：">
-            {objState.selectedRows.length}
-          </Form.Item>
-          <Form.Item label="付款金额：">￥{amount.total_wait_pay}</Form.Item>
-          <Form.Item label="收款人：">运单承运人</Form.Item>
+            {' '}
+            {objState.selectedRows.length}{' '}
+          </Form.Item>{' '}
+          <Form.Item label="付款金额："> ￥{amount.total_wait_pay} </Form.Item>{' '}
+          <Form.Item label="收款人："> 运单承运人 </Form.Item>{' '}
           <Form.Item
             label="本次付款类型："
             name="pay_type"
@@ -1371,22 +1373,20 @@ const WaybillIndex = props => {
               },
             ]}
           >
-            <Input style={{ width: '195px' }} />
-          </Form.Item>
+            <Input style={{ width: '195px' }} />{' '}
+          </Form.Item>{' '}
           <Form.Item label="快速选择：">
-            <Radio.Group
-              defaultValue="a"
-              buttonStyle="solid"
-              onChange={quickChecked}
-            >
-              <Radio.Button value="0">预付款</Radio.Button>
-              <Radio.Button value="1">到付款</Radio.Button>
-              <Radio.Button value="2">回单尾款</Radio.Button>
-            </Radio.Group>
-          </Form.Item>
+            <Radio.Group buttonStyle="solid" onChange={quickChecked}>
+              <Radio.Button value="0"> 预付款 </Radio.Button>{' '}
+              <Radio.Button value="1"> 到付款 </Radio.Button>{' '}
+              <Radio.Button value="2"> 回单尾款 </Radio.Button>{' '}
+            </Radio.Group>{' '}
+          </Form.Item>{' '}
           {payMore.requiredsms != 0 && (
             <Form.Item label="短信验证码：">
-              <Input name="smscode" style={{ width: '138px' }}></Input>
+              <Input name="smscode" style={{ width: '138px' }}>
+                {' '}
+              </Input>{' '}
               <Button
                 className={
                   payMore.is_sms_disabled
@@ -1396,70 +1396,67 @@ const WaybillIndex = props => {
                 disabled={payMore.is_sms_disabled}
                 onClick={getSmsCodeFn}
               >
-                {payMore.getBtnText}
-              </Button>
+                {payMore.getBtnText}{' '}
+              </Button>{' '}
               <div>
-                验证码关联手机号{payFormData.getFieldValue('shipper_mobile')}
+                验证码关联手机号 {payFormData.getFieldValue('shipper_mobile')}{' '}
                 {payMore.riskctrlmode && (
                   <span style={{ display: 'block', color: '#999' }}>
-                    系统管理->付款流程配置
+                    系统管理 - > 付款流程配置{' '}
                     <i style={{ color: '#f77f1f', fontStyle: 'normal' }}>
-                      配置审核流程后无需输入验证码
-                    </i>
+                      配置审核流程后无需输入验证码{' '}
+                    </i>{' '}
                   </span>
-                )}
-              </div>
+                )}{' '}
+              </div>{' '}
             </Form.Item>
-          )}
+          )}{' '}
           <span style={{ color: '#424752' }}>
-            注：确定后将会支付所选运单所有未付金额
-          </span>
-        </Form>
+            注： 确定后将会支付所选运单所有未付金额{' '}
+          </span>{' '}
+        </Form>{' '}
       </Modal>
-
-      {/* 批量付款错误信息弹窗提醒，包括(不满足付款条件、银行卡未绑定、余额不足) */}
+      {/* 批量付款错误信息弹窗提醒，包括(不满足付款条件、银行卡未绑定、余额不足) */}{' '}
       <Modal
         Modal
         visible={objState.payMoreErrModal}
         onCancel={closePayMoreErr}
         footer={[
           <Button key="back" onClick={closePayMoreErr}>
-            关闭
+            关闭{' '}
           </Button>,
         ]}
       >
         <p style={{ display: 'flex', padding: '10px 0', alignItems: 'center' }}>
           <ExclamationCircleFilled
             style={{ fontSize: '20px', color: '#ff4d4f', margin: '0 6px 0 0' }}
-          />
+          />{' '}
           <span style={{ fontSize: '20px', color: '#333', fontWeight: 'bold' }}>
-            {objState.payMoreErrInfoTitle}
-          </span>
-        </p>
+            {' '}
+            {objState.payMoreErrInfoTitle}{' '}
+          </span>{' '}
+        </p>{' '}
         {objState.pay_more_err_flag_1 && (
           <div className={styles.sub_title}>
-            <h3>常见原因：</h3>
-            <p>1、所选运单已结清</p>
-            <p>2、所选运单处于待指定承运人或已取消状态</p>
-            <p>3、所选运单付款金额为0</p>
+            <h3> 常见原因： </h3> <p> 1、 所选运单已结清 </p>{' '}
+            <p> 2、 所选运单处于待指定承运人或已取消状态 </p>{' '}
+            <p> 3、 所选运单付款金额为0 </p>{' '}
           </div>
-        )}
+        )}{' '}
         {objState.pay_more_err_flag_2 && (
           <div className={styles.sub_title}>
-            <h3>常见原因：</h3>
-            <p>未绑定承运人收款银行卡</p>
+            <h3> 常见原因： </h3> <p> 未绑定承运人收款银行卡 </p>{' '}
           </div>
-        )}
+        )}{' '}
         {objState.pay_more_err_flag_3 && (
           <div className={styles.sub_title}>
-            <h3>常见原因：</h3>
-            <p>当前已勾选的运单累计需付款￥{amount.total_wait_pay}</p>
-            <p>钱包可用余额￥{amount.available_amount}</p>
+            <h3> 常见原因： </h3>{' '}
+            <p> 当前已勾选的运单累计需付款￥ {amount.total_wait_pay} </p>{' '}
+            <p> 钱包可用余额￥ {amount.available_amount} </p>{' '}
           </div>
-        )}
+        )}{' '}
       </Modal>
-
-      {/*运单详情*/}
+      {/*运单详情*/}{' '}
       <Drawer
         title="运单详情"
         placement="right"
@@ -1468,10 +1465,9 @@ const WaybillIndex = props => {
         onClose={onCloseDetailDrawer}
         visible={objState.isDetailDrawer}
       >
-        <Details waybill_no={objState.waybill_no} />
+        <Details waybill_no={objState.waybill_no} />{' '}
       </Drawer>
-
-      {/*上传资料-走资金 */}
+      {/*上传资料-走资金 */}{' '}
       <Modal
         title="上传资料"
         okText="确定"
@@ -1482,17 +1478,16 @@ const WaybillIndex = props => {
         onCancel={handleRequiredCancel}
         footer={[
           <Button key="关闭" onClick={handleRequiredCancel}>
-            关闭
+            关闭{' '}
           </Button>,
         ]}
       >
         <UploadRequired
           waybill_no={objState.waybill_no}
           transportType={transportType}
-        />
+        />{' '}
       </Modal>
-
-      {/**上传资料-不走资金 */}
+      {/**上传资料-不走资金 */}{' '}
       <Modal
         title="上传资料"
         okText="确定"
@@ -1507,10 +1502,9 @@ const WaybillIndex = props => {
           waybill_no={objState.waybill_no}
           transportType={transportType}
           closeModelFromChild={closeModel}
-        />
+        />{' '}
       </Modal>
-
-      {/* 合同管理 */}
+      {/* 合同管理 */}{' '}
       <Modal
         title="确认合同"
         okText="确定合同"
@@ -1524,29 +1518,30 @@ const WaybillIndex = props => {
           props.contractData && props.contractData.contract_sign_flag == 0
             ? [
                 <Button key="back" onClick={handleContractCancel}>
-                  关闭
+                  关闭{' '}
                 </Button>,
                 <Button key="submit" type="primary" onClick={handleContractOk}>
-                  确定合同
+                  确定合同{' '}
                 </Button>,
               ]
             : [
                 <Button key="back" onClick={handleContractCancel}>
-                  关闭
+                  关闭{' '}
                 </Button>,
               ]
         }
       >
         {/\.pdf/gi.test(props.contractData.contract_pic) ? (
-          <iframe src={props.contractData.contract_pic} width="100%"></iframe>
+          <iframe src={props.contractData.contract_pic} width="100%">
+            {' '}
+          </iframe>
         ) : (
           <a href={props.contractData.contract_pic}>
-            <img src={props.contractData.contract_pic} />
+            <img src={props.contractData.contract_pic} />{' '}
           </a>
-        )}
+        )}{' '}
       </Modal>
-
-      {/* 批量上传 */}
+      {/* 批量上传 */}{' '}
       <Modal
         title="批量导入运单"
         width={800}
@@ -1554,10 +1549,9 @@ const WaybillIndex = props => {
         onCancel={handleBatchImportModal}
         footer={null}
       >
-        <BatchImport batchImportFlag={batchImportFlag} />
+        <BatchImport batchImportFlag={batchImportFlag} />{' '}
       </Modal>
-
-      {/*导出列表*/}
+      {/*导出列表*/}{' '}
       <Modal
         title="导出列表"
         width={800}
@@ -1568,8 +1562,8 @@ const WaybillIndex = props => {
         <ExportList
           exportListFlag={exportListFlag}
           exportWaybillType={exportWaybillType}
-        />
-      </Modal>
+        />{' '}
+      </Modal>{' '}
     </div>
   );
 };

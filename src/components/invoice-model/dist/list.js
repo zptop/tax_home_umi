@@ -335,7 +335,7 @@ var List = function(props) {
                   { compact: true },
                   React.createElement(
                     antd_1.Select,
-                    { defaultValue: '0', onChange: selectNum },
+                    { onChange: selectNum },
                     React.createElement(
                       antd_1.Select.Option,
                       { value: '0' },
@@ -369,7 +369,7 @@ var List = function(props) {
               { span: 4 },
               React.createElement(
                 antd_1.Select,
-                { defaultValue: '100', onChange: selectDate },
+                { onChange: selectDate },
                 React.createElement(
                   Option,
                   { value: '100' },

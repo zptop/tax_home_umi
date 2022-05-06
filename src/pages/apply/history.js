@@ -108,11 +108,11 @@ const ApplyHistory = props => {
 
   //选择运单号、客户销项发票单号
   const numSelector = (
-    <Select defaultValue="0" onChange={selectedNo} style={{ width: '100%' }}>
-      <Select.Option value="0">运单编号</Select.Option>
-      <Select.Option value="1">承运人</Select.Option>
-      <Select.Option value="2">车牌号/船名</Select.Option>
-      <Select.Option value="3">客户订单号</Select.Option>
+    <Select onChange={selectedNo} style={{ width: '100%' }}>
+      <Select.Option value="0"> 运单编号 </Select.Option>{' '}
+      <Select.Option value="1"> 承运人 </Select.Option>{' '}
+      <Select.Option value="2"> 车牌号 / 船名 </Select.Option>{' '}
+      <Select.Option value="3"> 客户订单号 </Select.Option>{' '}
     </Select>
   );
 
@@ -215,7 +215,7 @@ const ApplyHistory = props => {
       title: '序号',
       width: 60,
       render: (text, row, index) => {
-        return <span>{index + 1}</span>;
+        return <span> {index + 1} </span>;
       },
     },
     {
@@ -226,7 +226,7 @@ const ApplyHistory = props => {
       title: '申请付款金额(元)',
       width: 100,
       render: (text, row, index) => {
-        return <span>{accDiv(row.pay_money, 100).toFixed(2)}</span>;
+        return <span> {accDiv(row.pay_money, 100).toFixed(2)} </span>;
       },
     },
     {
@@ -236,7 +236,7 @@ const ApplyHistory = props => {
     {
       title: '申请时间',
       render: (text, record, index) => {
-        return <span>{formatDateYMDHMS(record.create_time, 'year')}</span>;
+        return <span> {formatDateYMDHMS(record.create_time, 'year')} </span>;
       },
     },
     {
@@ -256,7 +256,7 @@ const ApplyHistory = props => {
             style={{ color: '#00b0b5', border: 0, textDecoration: 'underline' }}
             onClick={() => openWaybillDetail(waybill_no)}
           >
-            {waybill_no}
+            {waybill_no}{' '}
           </a>
         );
       },
@@ -278,7 +278,7 @@ const ApplyHistory = props => {
     {
       title: '提货时间',
       render: function(text, row, index) {
-        return <span>{formatDateYMD(row.load_time)}</span>;
+        return <span> {formatDateYMD(row.load_time)} </span>;
       },
     },
     {
@@ -307,7 +307,7 @@ const ApplyHistory = props => {
               borderColor: waybill_status_color,
             }}
           >
-            {applypay_status_desc}
+            {applypay_status_desc}{' '}
           </span>
         );
       },
@@ -336,38 +336,37 @@ const ApplyHistory = props => {
                 addonBefore={numSelector}
                 style={{ width: '100%' }}
                 placeholder={placeholderInput}
-              />
-            </Form.Item>
-          </Col>
+              />{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={6}>
             <Form.Item {...rangeConfig} label="申请时间">
-              <RangePicker key={objState.timeRest} onChange={checkDate} />
-            </Form.Item>
-          </Col>
+              <RangePicker key={objState.timeRest} onChange={checkDate} />{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Form.Item name="applypay_status" label="状态">
               <Select style={{ width: '100%' }}>
-                <Option value="">全部</Option>
-                <Option value="1">待审核</Option>
-                <Option value="2">打款成功</Option>
-                <Option value="3">审核不通过</Option>
-              </Select>
-            </Form.Item>
-          </Col>
+                <Option value=""> 全部 </Option>{' '}
+                <Option value="1"> 待审核 </Option>{' '}
+                <Option value="2"> 打款成功 </Option>{' '}
+                <Option value="3"> 审核不通过 </Option>{' '}
+              </Select>{' '}
+            </Form.Item>{' '}
+          </Col>{' '}
           <Col span={3}>
             <Button type="primary" htmlType="submit">
-              搜索
-            </Button>
+              搜索{' '}
+            </Button>{' '}
             <Button htmlType="button" onClick={handleSearchReset}>
-              重置
-            </Button>
-          </Col>
+              重置{' '}
+            </Button>{' '}
+          </Col>{' '}
           <Col span={7}>
-            <Button type="primary">导出</Button>
-          </Col>
-        </Form>
+            <Button type="primary"> 导出 </Button>{' '}
+          </Col>{' '}
+        </Form>{' '}
       </Row>
-
       <Table
         columns={columns}
         dataSource={props.audit_history_list}
@@ -384,8 +383,7 @@ const ApplyHistory = props => {
           onShowSizeChange: onShowSizeChange,
         }}
       />
-
-      {/*运单详情*/}
+      {/*运单详情*/}{' '}
       <Drawer
         title="运单详情"
         placement="right"
@@ -394,8 +392,8 @@ const ApplyHistory = props => {
         onClose={onCloseDetailDrawer}
         visible={objState.isDetailDrawer}
       >
-        <Details waybill_no={waybillNo} />
-      </Drawer>
+        <Details waybill_no={waybillNo} />{' '}
+      </Drawer>{' '}
     </>
   );
 };

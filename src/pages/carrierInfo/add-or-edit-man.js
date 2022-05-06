@@ -185,15 +185,16 @@ const AddOrEditMan = props => {
   //提交表单--承运人
   const onCarrierFinish = fieldsValue => {
     if (showType == 'opCarrier') {
-      let { id_is_long_time } = carrierSubmitData;
+      let { id_is_long_time, id_pic1, id_pic2 } = carrierSubmitData;
       let values = {
         ...fieldsValue,
         id_expire: fieldsValue.id_expire
           ? fieldsValue['id_expire'].format('YYYY-MM-DD')
           : '',
         id_is_long_time,
+        id_pic1,
+        id_pic2,
       };
-      dataRef.current = values;
       props
         .addCarrierBossFn(qs.stringify(values))
         .then(res => {
@@ -221,21 +222,8 @@ const AddOrEditMan = props => {
           message.warning(err || '系统错误');
         });
     } else {
+      dataRef.current = fieldsValue;
       setCurrent(current + 1);
-      // let {
-      //   driver_lic_is_long_time,
-      //   driver_name,
-      //   driver_mobile,
-      //   driver_id,
-      // } = driverIdSubmitData;
-      // values = {
-      //   ...fieldsValue,
-      //   ...carrierSubmitData,
-      //   real_name: driver_name,
-      //   mobile: driver_mobile,
-      //   id_card_no: driver_id,
-      //   driver_lic_is_long_time,
-      // };
     }
   };
   const prev = () => {
@@ -244,11 +232,20 @@ const AddOrEditMan = props => {
 
   //提交表单--司机
   const onDriverFinish = fieldsValue => {
+    let { id_expire } = dataRef.current,
+      { valid_period_from, valid_period_to } = fieldsValue;
     let values = {
       ...fieldsValue,
       ...dataRef.current,
+      id_expire: id_expire ? id_expire.format('YYYY-MM-DD') : '',
+      valid_period_from: valid_period_from
+        ? valid_period_from.format('YYYY-MM-DD')
+        : '',
+      valid_period_to: valid_period_to
+        ? valid_period_to.format('YYYY-MM-DD')
+        : '',
     };
-    console.log('values:', values);
+    console.log('driver-values:', values);
     return;
     props
       .addDriverFn(qs.stringify(values))
@@ -431,18 +428,19 @@ const AddOrEditMan = props => {
               id_expire: Boolean(id_expire * 1)
                 ? moment(formatDateYMD(id_expire), 'YYYY-MM-DD')
                 : null,
+            });
+            driverForm.setFieldsValue({
+              driver_name,
               vehicle_class,
               driver_lic_pic,
               driver_lic_side_pic,
               driver_issuing_organizations, //驾驶证发证机关
-              valid_period_from: moment(
-                formatDateYMD(valid_period_from),
-                'YYYY-MM-DD',
-              ), //有限期起
-              valid_period_to: moment(
-                formatDateYMD(valid_period_to),
-                'YYYY-MM-DD',
-              ), //有限期至
+              valid_period_from: Boolean(valid_period_from * 1)
+                ? moment(formatDateYMD(valid_period_from), 'YYYY-MM-DD')
+                : null, //有限期起
+              valid_period_to: Boolean(valid_period_to * 1)
+                ? moment(formatDateYMD(valid_period_to), 'YYYY-MM-DD')
+                : null, //有限期至
               driver_lic_is_long_time,
               remark,
             });
@@ -527,7 +525,7 @@ const AddOrEditMan = props => {
       });
 
       if (res.code == 0) {
-        form.setFieldsValue(res.data);
+        driverForm.setFieldsValue(res.data);
         setDriverIdSubmitData({
           ...driverIdSubmitData,
           ...res.data,
@@ -539,12 +537,28 @@ const AddOrEditMan = props => {
     } catch (e) {}
   };
 
+  //删除驾驶证正页
+  const reDriverLicFrontDel = () => {
+    setDriverIdSubmitData({
+      ...driverIdSubmitData,
+      driverPicListShowFront: [],
+    });
+  };
+
   //子组件传过来的的驾驶证副页
   const reDriverLicBackFromChild = file => {
-    setCarrierSubmitData({
-      ...carrierSubmitData,
+    setDriverIdSubmitData({
+      ...driverIdSubmitData,
       ...res.data,
       driver_lic_side_pic: file,
+    });
+  };
+
+  //删除驾驶证副页
+  const reDriverLicBackDel = () => {
+    setDriverIdSubmitData({
+      ...driverIdSubmitData,
+      driverPicListShowBack: [],
     });
   };
 
@@ -587,11 +601,13 @@ const AddOrEditMan = props => {
         onCancel={closeModal}
         footer={null}
       >
-        <Steps current={current} style={{ paddingBottom: '20px' }}>
-          {steps.map(item => (
-            <Step key={item.title} />
-          ))}
-        </Steps>
+        {showType == 'opDriver' && (
+          <Steps current={current} style={{ paddingBottom: '20px' }}>
+            {steps.map(item => (
+              <Step key={item.title} />
+            ))}
+          </Steps>
+        )}
         <Form
           style={{ display: current == 0 ? 'block' : 'none' }}
           form={form}
@@ -816,6 +832,7 @@ const AddOrEditMan = props => {
                     delPicUrl="waybill/delvechilePic"
                     flag="reDriverLicFront"
                     reDriverLicFront={reDriverLicFrontFromChild}
+                    reDriverLicFrontDel={reDriverLicFrontDel}
                     count={1}
                   />
                 </Form.Item>
@@ -843,7 +860,8 @@ const AddOrEditMan = props => {
                     delPicUrl="waybill/delvechilePic"
                     flag="reDriverLicBack"
                     reDriverLicBack={reDriverLicBackFromChild}
-                    count="1"
+                    reDriverLicBackDel={reDriverLicBackDel}
+                    count={1}
                   />
                 </Form.Item>
                 <Popover
