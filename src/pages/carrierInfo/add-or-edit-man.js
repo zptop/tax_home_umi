@@ -55,9 +55,21 @@ const mapDispatchToProps = dispatch => {
         value,
       });
     },
+    editCarrierFn: value => {
+      return dispatch({
+        type: namespace + '/editCarrierModel',
+        value,
+      });
+    },
     addDriverFn: value => {
       return dispatch({
         type: namespace + '/addDriverModel',
+        value,
+      });
+    },
+    editDriverFn: value => {
+      return dispatch({
+        type: namespace + '/editDriverModel',
         value,
       });
     },
@@ -183,79 +195,35 @@ const AddOrEditMan = props => {
   };
 
   //提交表单--承运人
-  const onCarrierFinish = fieldsValue => {
+  const onCarrierFinish = async fieldsValue => {
     if (showType == 'opCarrier') {
-      let { id_is_long_time, id_pic1, id_pic2 } = carrierSubmitData;
-      let values = {
-        ...fieldsValue,
-        id_expire: fieldsValue.id_expire
-          ? fieldsValue['id_expire'].format('YYYY-MM-DD')
-          : '',
-        id_is_long_time,
-        id_pic1,
-        id_pic2,
-      };
-      props
-        .addCarrierBossFn(qs.stringify(values))
-        .then(res => {
-          res
-            .json()
-            .then(data => {
-              if (data.code == 0) {
-                message.success({
-                  content: data.msg || '添加成功',
-                  duration: 1,
-                  onClose: () => {
-                    closeModal();
-                    props.addOrEditManCallList();
-                  },
-                });
-              } else {
-                message.warning(data.msg || '系统错误');
-              }
-            })
-            .catch(err => {
-              message.warning(err || '系统错误');
-            });
-        })
-        .catch(err => {
-          message.warning(err || '系统错误');
-        });
-    } else {
-      dataRef.current = fieldsValue;
-      setCurrent(current + 1);
-    }
-  };
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-
-  //提交表单--司机
-  const onDriverFinish = fieldsValue => {
-    let { id_expire } = dataRef.current,
-      { valid_period_from, valid_period_to } = fieldsValue;
-    let values = {
-      ...fieldsValue,
-      ...dataRef.current,
-      id_expire: id_expire ? id_expire.format('YYYY-MM-DD') : '',
-      valid_period_from: valid_period_from
-        ? valid_period_from.format('YYYY-MM-DD')
-        : '',
-      valid_period_to: valid_period_to
-        ? valid_period_to.format('YYYY-MM-DD')
-        : '',
-    };
-    console.log('driver-values:', values);
-    return;
-    props
-      .addDriverFn(qs.stringify(values))
-      .then(res => {
+      let { id_is_long_time, id_pic1, id_pic2 } = carrierSubmitData,
+        res = null,
+        values = {
+          ...fieldsValue,
+          id_expire: fieldsValue.id_expire
+            ? fieldsValue['id_expire'].format('YYYY-MM-DD')
+            : '',
+          id_is_long_time,
+          id_pic1,
+          id_pic2,
+        };
+      try {
+        if (carrier_uin) {
+          values = {
+            ...values,
+            carrier_uin,
+          };
+          res = await props.editCarrierFn(qs.stringify(values));
+        } else {
+          res = await props.addCarrierBossFn(qs.stringify(values));
+        }
         res
           .json()
           .then(data => {
             if (data.code == 0) {
               message.success({
-                content: data.msg || '添加成功',
+                content: data.msg,
                 duration: 1,
                 onClose: () => {
                   closeModal();
@@ -269,15 +237,72 @@ const AddOrEditMan = props => {
           .catch(err => {
             message.warning(err || '系统错误');
           });
-      })
-      .catch(err => {
-        message.warning(err || '系统错误');
-      });
+      } catch (e) {
+        message.warning(e || '系统错误');
+      }
+    } else {
+      dataRef.current = fieldsValue;
+      setCurrent(current + 1);
+    }
+  };
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  //提交表单--司机
+  const onDriverFinish = async fieldsValue => {
+    let { id_expire } = dataRef.current,
+      { valid_period_from, valid_period_to } = fieldsValue,
+      res = null,
+      values = {
+        ...fieldsValue,
+        ...dataRef.current,
+        id_expire: id_expire ? id_expire.format('YYYY-MM-DD') : '',
+        valid_period_from: valid_period_from
+          ? valid_period_from.format('YYYY-MM-DD')
+          : '',
+        valid_period_to: valid_period_to
+          ? valid_period_to.format('YYYY-MM-DD')
+          : '',
+      };
+    if (cd_id) {
+      values = {
+        ...values,
+        cd_id,
+      };
+      res = await props.editDriverFn(qs.stringify(values));
+    } else {
+      res = await props.addDriverFn(qs.stringify(values));
+    }
+    try {
+      res
+        .json()
+        .then(data => {
+          if (data.code == 0) {
+            message.success({
+              content: data.msg,
+              duration: 1,
+              onClose: () => {
+                closeModal();
+                props.addOrEditManCallList();
+              },
+            });
+          } else {
+            message.warning(data.msg || '系统错误');
+          }
+        })
+        .catch(err => {
+          message.warning(err || '系统错误');
+        });
+    } catch (e) {
+      message.warning(e || '系统错误');
+    }
   };
 
   //关闭弹框
   const closeModal = () => {
     form.resetFields();
+    driverForm.resetFields();
     setCarrierSubmitData({
       ...carrierSubmitData,
       real_name: '',
@@ -307,7 +332,7 @@ const AddOrEditMan = props => {
     });
     setCurrent(0);
     setIsaddOrEditManFlag(false);
-    setTimestamp(new Date().getTime());
+    // setTimestamp(new Date().getTime());
   };
 
   //父组件调用子组件方法
@@ -534,7 +559,9 @@ const AddOrEditMan = props => {
       } else {
         message.warning(res.msg || '系统错误');
       }
-    } catch (e) {}
+    } catch (e) {
+      message.warning(e || '系统错误');
+    }
   };
 
   //删除驾驶证正页

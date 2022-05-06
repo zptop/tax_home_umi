@@ -7,7 +7,9 @@ import {
   getCarrierInfo,
   getDriverInfo,
   addCarrierBoss,
+  editCarrier,
   addDriver,
+  editDriver,
 } from '../sevice/carrierInfo';
 import { scanIdCard } from '../util/ocr';
 export default {
@@ -119,6 +121,12 @@ export default {
       return res;
     },
 
+    //编辑司机
+    *editDriverModel({ value }, { call, put }) {
+      const res = yield call(editDriver, value);
+      return res;
+    },
+
     //司机列表
     *getDriverListModel({ value }, { call, put }) {
       yield put({ type: 'setLoading', payload: true });
@@ -137,9 +145,14 @@ export default {
       return res;
     },
 
-    //新增车队老板
+    //新增车队老板（承运人）
     *addCarrierBossModel({ value }, { call, put }) {
       const res = yield call(addCarrierBoss, value);
+      return res;
+    },
+    //编辑车队老板（承运人）
+    *editCarrierModel({ value }, { call, put }) {
+      const res = yield call(editCarrier, value);
       return res;
     },
   },
