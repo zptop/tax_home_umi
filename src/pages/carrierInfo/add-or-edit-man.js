@@ -253,6 +253,8 @@ const AddOrEditMan = props => {
   const onDriverFinish = async fieldsValue => {
     let { id_expire } = dataRef.current,
       { valid_period_from, valid_period_to } = fieldsValue,
+      { id_is_long_time } = carrierSubmitData,
+      { driver_lic_is_long_time } = driverIdSubmitData,
       res = null,
       values = {
         ...fieldsValue,
@@ -264,6 +266,8 @@ const AddOrEditMan = props => {
         valid_period_to: valid_period_to
           ? valid_period_to.format('YYYY-MM-DD')
           : '',
+        id_is_long_time,
+        driver_lic_is_long_time,
       };
     if (cd_id) {
       values = {
@@ -549,8 +553,15 @@ const AddOrEditMan = props => {
         scanUrl: '/Ocr/driverLicenseFrontRecon',
       });
 
+      console.log('res:', res);
+
       if (res.code == 0) {
-        driverForm.setFieldsValue(res.data);
+        let { valid_period_from, valid_period_to } = res.data;
+        driverForm.setFieldsValue({
+          ...res.data,
+          valid_period_from: moment(valid_period_from, 'YYYY-MM-DD'),
+          valid_period_to: moment(valid_period_to, 'YYYY-MM-DD'),
+        });
         setDriverIdSubmitData({
           ...driverIdSubmitData,
           ...res.data,
