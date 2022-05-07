@@ -99,7 +99,7 @@ const UploadImgModal = props => {
         } = props;
         if (/^[0-9]*$/.test(service_no)) {
           if (isScan == 'no') {
-            flag(file);
+            props[props.flag](file);
           } else {
             props[props.flag](media_path_source); //子组件通过函数传值到父组件(ocr扫描用)
           }

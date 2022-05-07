@@ -253,8 +253,12 @@ const AddOrEditMan = props => {
   const onDriverFinish = async fieldsValue => {
     let { id_expire } = dataRef.current,
       { valid_period_from, valid_period_to } = fieldsValue,
-      { id_is_long_time } = carrierSubmitData,
-      { driver_lic_is_long_time } = driverIdSubmitData,
+      { id_is_long_time, id_pic1, id_pic2 } = carrierSubmitData,
+      {
+        driver_lic_is_long_time,
+        driver_lic_pic,
+        driver_lic_side_pic,
+      } = driverIdSubmitData,
       res = null,
       values = {
         ...fieldsValue,
@@ -268,6 +272,10 @@ const AddOrEditMan = props => {
           : '',
         id_is_long_time,
         driver_lic_is_long_time,
+        id_pic1,
+        id_pic2,
+        driver_lic_pic,
+        driver_lic_side_pic,
       };
     if (cd_id) {
       values = {
@@ -437,17 +445,23 @@ const AddOrEditMan = props => {
                   thumbUrl: driver_lic_pic_text,
                 },
               ],
-              driverPicListShowBack: [
-                {
-                  uid: new Date().getTime(),
-                  name: props.title,
-                  status: 'done',
-                  url: driver_lic_side_pic_text,
-                  media_path_source: driver_lic_side_pic,
-                  thumbUrl: driver_lic_side_pic_text,
-                },
-              ],
             });
+            if (driver_lic_side_pic_text) {
+              setDriverIdSubmitData({
+                ...driverIdSubmitData,
+                ...res.data,
+                driverPicListShowBack: [
+                  {
+                    uid: new Date().getTime(),
+                    name: props.title,
+                    status: 'done',
+                    url: driver_lic_side_pic_text,
+                    media_path_source: driver_lic_side_pic,
+                    thumbUrl: driver_lic_side_pic_text,
+                  },
+                ],
+              });
+            }
             form.setFieldsValue({
               real_name: driver_name,
               mobile: driver_mobile,
@@ -552,9 +566,6 @@ const AddOrEditMan = props => {
         pic_type: 5,
         scanUrl: '/Ocr/driverLicenseFrontRecon',
       });
-
-      console.log('res:', res);
-
       if (res.code == 0) {
         let { valid_period_from, valid_period_to } = res.data;
         driverForm.setFieldsValue({
@@ -585,11 +596,17 @@ const AddOrEditMan = props => {
 
   //子组件传过来的的驾驶证副页
   const reDriverLicBackFromChild = file => {
-    setDriverIdSubmitData({
-      ...driverIdSubmitData,
-      ...res.data,
-      driver_lic_side_pic: file,
-    });
+    if (file && file.response) {
+      let {
+        response: {
+          data: { media_path_source },
+        },
+      } = file;
+      setDriverIdSubmitData({
+        ...driverIdSubmitData,
+        driver_lic_side_pic: media_path_source,
+      });
+    }
   };
 
   //删除驾驶证副页
