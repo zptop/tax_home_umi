@@ -1,5 +1,18 @@
 import React, { useState, useEffect, useImperativeHandle } from 'react';
-import { Table, Button, Menu, Modal, Tooltip, Dropdown, Drawer } from 'antd';
+import {
+  Table,
+  Row,
+  Select,
+  Col,
+  Button,
+  Input,
+  Menu,
+  Modal,
+  Tooltip,
+  Dropdown,
+  Drawer,
+  Form,
+} from 'antd';
 const { confirm } = Modal;
 import { history } from 'umi';
 import {
@@ -7,11 +20,16 @@ import {
   ExclamationCircleFilled,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import DeatilMan from './detail-man';
+import { createFromIconfontCN } from '@ant-design/icons';
+const IconFont = createFromIconfontCN({
+  scriptUrl: ['//at.alicdn.com/t/font_1595958_p5529b5fjfr.js'],
+});
 import styles from './index.less';
 import { connect } from 'dva';
+import { formatSelectedOptions } from '../../util/tools';
 const namespace = 'carrierInfo';
-
+import DeatilMan from './detail-man';
+import AddOrEditMan from './add-or-edit-man';
 const mapStateToProps = state => {
   let { loading, totalNum, c_getCarrierList, c_getWaitCarrierList } = state[
     namespace
@@ -51,16 +69,106 @@ const mapDispatchToProps = dispatch => {
 };
 
 const List = props => {
-  let {
-    loading,
-    totalNum,
-    flag,
-    data,
-    driverAdmin,
-    vehicleAdmin,
-    userInfo,
-  } = props;
+  let { loading, totalNum, flag, driverAdmin, vehicleAdmin, userInfo } = props;
   const [carrier_uin, setCarrier_uin] = useState('');
+  const ChildAddOrEditRef = React.createRef();
+  const [form] = Form.useForm();
+  const [placeholderInput, setPlaceholderInput] = useState('请输入承运人名称');
+  const [title, setTitle] = useState('新增车队老板');
+
+  //获取承运人司机---编辑
+  const getUinOrId = value => {
+    openAddOrEditManModal();
+    setTitle(value.title);
+    ChildAddOrEditRef.current.setUinOrId(value);
+  };
+
+  //表格初始化状态
+  const [objFormState, setObjFormState] = useState({
+    page: 1,
+    num: 10,
+    searchName: 'carrier_name',
+    audit_status: '',
+    driver_status: '',
+    vehicle_status: '',
+  });
+
+  //打开--添加车老板弹框---新增
+  const openAddOrEditManModal = () => {
+    setTitle('新增车队老板');
+    ChildAddOrEditRef.current.setAdd({ carrier_uin: '' });
+  };
+
+  //选择单号
+  const selectedNo = value => {
+    switch (value * 1) {
+      case 0:
+        setObjFormState({
+          ...objFormState,
+          searchName: 'carrier_name',
+        });
+        setPlaceholderInput('请输入承运人名称');
+        break;
+      case 1:
+        setObjFormState({
+          ...objFormState,
+          searchName: 'carrier_mobile',
+        });
+        setPlaceholderInput('请输入承运人手机');
+        break;
+      case 2:
+        setObjFormState({
+          ...objFormState,
+          searchName: 'driver_name',
+        });
+        setPlaceholderInput('请输入司机姓名');
+        break;
+      case 3:
+        setObjFormState({
+          ...objFormState,
+          searchName: 'driver_mobile',
+        });
+        setPlaceholderInput('请输入司机手机号');
+        break;
+      case 4:
+        setObjFormState({
+          ...objFormState,
+          searchName: 'vehicle_number',
+        });
+        setPlaceholderInput('请输入车牌号');
+        break;
+    }
+  };
+
+  //添加完"车老板或司机"后触发列表
+  const getCarrierListFromAddOrEdit = () => {
+    props.getCarrierListFn(formatSelectedOptions({ ...objFormState, flag }));
+  };
+  //搜索
+  const onFinish = values => {
+    let { page, num } = objFormState;
+    values = {
+      ...values,
+      page,
+      num,
+      flag,
+    };
+    props.getCarrierListFn(formatSelectedOptions(values));
+  };
+
+  //重置
+  const handleSearchReset = () => {
+    form.resetFields();
+    setObjFormState({
+      ...objFormState,
+      carrier_name: '',
+      audit_status: '',
+      driver_status: '',
+      vehicle_status: '',
+    });
+    props.getCarrierListFn(formatSelectedOptions({ ...objFormState, flag }));
+  };
+
   //抽屉开关-承运人详情
   const [visibleDrawer, setVisibleDrawer] = useState(false);
   const handleDetail = carrier_uin => {
@@ -73,28 +181,13 @@ const List = props => {
 
   //表格初始化状态
   const [objState, setObjState] = useState({
-    pageNum: 1,
-    pageSize: 10,
-  });
-
-  //父组件调用子组件方法
-  useImperativeHandle(props.onRef, () => {
-    return {
-      getList: values => {
-        let params = {
-          page: objState.pageNum,
-          num: objState.pageSize,
-          flag,
-          ...values,
-        };
-        props.getCarrierListFn(params);
-      },
-    };
+    page: 1,
+    num: 10,
   });
 
   //打开-编辑承运人
   const handleEdit = carrier_uin => {
-    props.getUinOrId({ carrier_uin, title: '编辑承运人' });
+    getUinOrId({ carrier_uin, title: '编辑承运人' });
   };
 
   //车辆管理
@@ -143,11 +236,10 @@ const List = props => {
           cancelText: '取消',
           onOk() {
             let params = {
-              page: objState.pageNum,
-              num: objState.pageSize,
+              page: objState.page,
+              num: objState.num,
               flag,
               url: '/carrierInfo/delCarrier',
-              ...data,
             };
             props.delOrRejectCarrierFn({ carrier_uin, ...params });
           },
@@ -162,11 +254,10 @@ const List = props => {
           cancelText: '取消',
           onOk() {
             let params = {
-              page: objState.pageNum,
-              num: objState.pageSize,
+              page: objState.page,
+              num: objState.num,
               flag,
               url: '/carrierInfo/rejectCarrier',
-              ...data,
             };
             props.delOrRejectCarrierFn({ carrier_uin, flag, ...params });
           },
@@ -342,40 +433,163 @@ const List = props => {
     },
   ];
 
-  //pageSize 变化的回调
-  const onShowSizeChange = (current, pageSize) => {
+  //num 变化的回调
+  const onShowSizeChange = (current, num) => {
     setObjState({
       ...objState,
-      pageNum: current,
-      pageSize: pageSize,
+      page: current,
+      num,
     });
-    let params = { page: current, num: pageSize, flag, ...data };
+    let params = { page: current, num, flag };
     props.getCarrierListFn(params);
   };
 
   //分页
-  const pageChange = (page, pageSize) => {
+  const pageChange = (page, num) => {
     setObjState({
       ...objState,
-      pageNum: page,
-      pageSize,
+      page,
+      num,
     });
-    let params = { page, num: pageSize, flag, ...data };
+    let params = { page, num, flag };
     props.getCarrierListFn(params);
   };
 
   useEffect(() => {
     let params = {
-      page: objState.pageNum,
-      num: objState.pageSize,
+      page: objState.page,
+      num: objState.num,
       flag,
-      ...data,
     };
     props.getCarrierListFn(params);
   }, [flag]);
 
   return (
     <>
+      <Form
+        form={form}
+        onFinish={onFinish}
+        initialValues={{
+          carrier_name: '',
+          audit_status: '200',
+          driver_status: '200',
+          vehicle_status: '200',
+        }}
+      >
+        <Row
+          gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
+          className={styles.search_box}
+        >
+          {flag == 'getCarrierList' ? (
+            <>
+              <Col
+                span={4}
+                style={{ display: 'flex', alignItems: 'flex-start' }}
+              >
+                <Select
+                  onChange={selectedNo}
+                  defaultValue="0"
+                  style={{ width: '130px' }}
+                >
+                  <Select.Option value="0">承运人名称</Select.Option>
+                  <Select.Option value="1">承运人手机</Select.Option>
+                  <Select.Option value="2">司机姓名</Select.Option>
+                  <Select.Option value="3">司机手机号</Select.Option>
+                  <Select.Option value="4">车牌号</Select.Option>
+                </Select>
+                <Form.Item name={objState.searchName}>
+                  <Input placeholder={placeholderInput} />
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item name="audit_status" label="承运人认证状态">
+                  <Select>
+                    <Select.Option value="200">全部</Select.Option>
+                    <Select.Option value="0">审核中</Select.Option>
+                    <Select.Option value="1">审核通过</Select.Option>
+                    <Select.Option value="2">审核不通过</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item name="driver_status" label="司机认证状态">
+                  <Select>
+                    <Select.Option value="200">全部</Select.Option>
+                    <Select.Option value="0">审核中</Select.Option>
+                    <Select.Option value="1">审核通过</Select.Option>
+                    <Select.Option value="2">审核不通过</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={4}>
+                <Form.Item name="vehicle_status" label="车辆认证状态">
+                  <Select>
+                    <Select.Option value="200">全部</Select.Option>
+                    <Select.Option value="0">审核中</Select.Option>
+                    <Select.Option value="1">审核通过</Select.Option>
+                    <Select.Option value="2">审核不通过</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={3}>
+                <Button type="primary" htmlType="submit">
+                  搜索
+                </Button>
+                <Button htmlType="button" onClick={handleSearchReset}>
+                  重置
+                </Button>
+              </Col>
+            </>
+          ) : (
+            <Col span={19}></Col>
+          )}
+          <Col span={5}>
+            <Button type="primary" onClick={openAddOrEditManModal}>
+              新增车队老板
+            </Button>
+            <Tooltip
+              placement="left"
+              title={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      '<p>适用于接单后分配给其他司机运输；</p>' +
+                      '<p>可使用老板身份证进行认证，然后添</p>' +
+                      '<p>加司机、车辆；登录手机号务必为车</p>' +
+                      '<p>辆；登录手机号务必为车队老板手机号！</p>',
+                  }}
+                ></div>
+              }
+            >
+              <IconFont
+                type="iconbangzhu"
+                style={{ fontSize: '18px', marginLeft: '6px' }}
+              />
+            </Tooltip>
+            <Button type="primary">新增个体司机</Button>
+            <Tooltip
+              placement="left"
+              title={
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      '<p>适用于司机自己接单、运输；</p>' +
+                      '<p>可使用司机身份证、驾驶证进</p>' +
+                      '<p>行快速认证；登录手机号务必为</p>' +
+                      '<p>接单人手机号！</p>',
+                  }}
+                ></div>
+              }
+            >
+              <IconFont
+                type="iconbangzhu"
+                style={{ fontSize: '18px', marginLeft: '6px' }}
+              />
+            </Tooltip>
+          </Col>
+        </Row>
+      </Form>
+
       <Table
         columns={columns}
         dataSource={props['c_' + flag]}
@@ -385,9 +599,9 @@ const List = props => {
         sticky
         pagination={{
           showQuickJumper: true,
-          current: objState.pageNum,
-          pageSize: objState.pageSize,
-          pageSizeOptions: [10, 20, 50, 100],
+          current: objState.page,
+          num: objState.num,
+          numOptions: [10, 20, 50, 100],
           total: totalNum,
           onChange: pageChange,
           onShowSizeChange: onShowSizeChange,
@@ -402,6 +616,13 @@ const List = props => {
       >
         <DeatilMan carrier_uin={carrier_uin} showType="detailCarrier" />
       </Drawer>
+      {/*新增车队老板*/}
+      <AddOrEditMan
+        title={title}
+        onRef={ChildAddOrEditRef}
+        addOrEditManCallList={getCarrierListFromAddOrEdit}
+        showType="opCarrier"
+      />
     </>
   );
 };
