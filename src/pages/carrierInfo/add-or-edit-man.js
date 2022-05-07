@@ -284,6 +284,10 @@ const AddOrEditMan = props => {
       };
       res = await props.editDriverFn(qs.stringify(values));
     } else {
+      values = {
+        ...values,
+        carrier_uin,
+      };
       res = await props.addDriverFn(qs.stringify(values));
     }
     try {
@@ -353,6 +357,7 @@ const AddOrEditMan = props => {
       setAdd: value => {
         closeModal();
         setIsaddOrEditManFlag(true);
+        setCarrier_uin(value.carrier_uin);
       },
       setUinOrId: async value => {
         setIsaddOrEditManFlag(true);

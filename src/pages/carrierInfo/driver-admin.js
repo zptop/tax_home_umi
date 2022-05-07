@@ -64,6 +64,7 @@ const mapDispatchToProps = dispatch => {
 
 const DriverAdmin = props => {
   let { loading, totalNum, driverList } = props;
+  console.log('driverList:', driverList);
   const location = useLocation();
   const ChildRef = React.createRef();
   const ChildAddOrEditRef = React.createRef();
@@ -85,22 +86,26 @@ const DriverAdmin = props => {
 
   //表格初始化状态
   const [objState, setObjState] = useState({
-    pageNum: 1,
-    pageSize: 10,
+    page: 1,
+    num: 10,
     searchName: 'driver_name',
     audit_status: '',
+    carrier_uin: '',
   });
 
   //打开-司机弹框---编辑
   const handleEdit = cd_id => {
     setTitle('编辑司机');
-    ChildAddOrEditRef.current.setUinOrId({ cd_id, carrier_uin });
+    ChildAddOrEditRef.current.setUinOrId({
+      cd_id,
+      carrier_uin: objState.carrier_uin,
+    });
   };
 
   //打开--司机弹框---新增
   const openAddDriver = () => {
     setTitle('新增司机');
-    ChildAddOrEditRef.current.setAdd();
+    ChildAddOrEditRef.current.setAdd({ carrier_uin: objState.carrier_uin });
   };
 
   //选择单号
@@ -125,12 +130,9 @@ const DriverAdmin = props => {
 
   //搜索
   const onFinish = values => {
-    let { pageNum: page, pageSize: num } = objState;
     values = {
+      ...objState,
       ...values,
-      page,
-      num,
-      carrier_uin,
     };
     dataRef.current = values;
     props.getDriverListFn(dataRef.current);
@@ -139,36 +141,35 @@ const DriverAdmin = props => {
   //重置
   const handleSearchReset = () => {
     form.resetFields();
-    let params = {
-      carrier_uin,
-      page: 1,
-      num: 10,
-      driver_name: '',
-      audit_status: '',
-    };
-    props.getDriverListFn(params);
-  };
-
-  //pageSize 变化的回调
-  const onShowSizeChange = (current, pageSize) => {
     setObjState({
       ...objState,
-      pageNum: current,
-      pageSize: pageSize,
+      page: 1,
+      num: 10,
+      searchName: 'driver_name',
+      audit_status: '',
+      carrier_uin: '',
     });
-    let params = { page: current, num: pageSize, carrier_uin };
-    props.getDriverListFn(params);
+    props.getDriverListFn(objState);
+  };
+
+  //num 变化的回调
+  const onShowSizeChange = (current, num) => {
+    setObjState({
+      ...objState,
+      page: current,
+      num,
+    });
+    props.getDriverListFn(objState);
   };
 
   //分页
-  const pageChange = (page, pageSize) => {
+  const pageChange = (page, num) => {
     setObjState({
       ...objState,
-      pageNum: page,
-      pageSize,
+      page,
+      num,
     });
-    let params = { page, num: pageSize, carrier_uin };
-    props.getDriverListFn(params);
+    props.getDriverListFn(objState);
   };
 
   //列表->更多操作
@@ -219,15 +220,18 @@ const DriverAdmin = props => {
 
   //添加完"司机"后触发列表
   const getCarrierListFromAddOrEdit = () => {
-    ChildRef.current.getList(formatSelectedOptions(objState));
+    props.getDriverListFn({ ...objState });
   };
 
   useEffect(() => {
     let { carrier_uin } = location.query;
-    setCarrier_uin(carrier_uin);
+    setObjState({
+      ...objState,
+      carrier_uin,
+    });
     let params = {
-      page: objState.pageNum,
-      num: objState.pageSize,
+      page: objState.page,
+      num: objState.num,
       carrier_uin,
     };
     props.getDriverListFn(params);
@@ -346,7 +350,11 @@ const DriverAdmin = props => {
           }}
         >
           <Col span={4} style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Select onChange={selectedNo}>
+            <Select
+              defaultValue="0"
+              onChange={selectedNo}
+              style={{ width: '130px' }}
+            >
               <Select.Option value="0">司机名称</Select.Option>
               <Select.Option value="1">司机手机号</Select.Option>
             </Select>
@@ -358,9 +366,9 @@ const DriverAdmin = props => {
             <Form.Item name="audit_status" label="认证状态">
               <Select>
                 <Select.Option value="">全部</Select.Option>
-                <Select.Option value="1">审核中</Select.Option>
-                <Select.Option value="2">审核通过</Select.Option>
-                <Select.Option value="3">审核不通过</Select.Option>
+                <Select.Option value="0">审核中</Select.Option>
+                <Select.Option value="1">审核通过</Select.Option>
+                <Select.Option value="2">审核不通过</Select.Option>
               </Select>
             </Form.Item>
           </Col>
@@ -388,9 +396,9 @@ const DriverAdmin = props => {
         sticky
         pagination={{
           showQuickJumper: true,
-          current: objState.pageNum,
-          pageSize: objState.pageSize,
-          pageSizeOptions: [10, 20, 50, 100],
+          current: objState.page,
+          num: objState.num,
+          numOptions: [10, 20, 50, 100],
           total: totalNum,
           onChange: pageChange,
           onShowSizeChange: onShowSizeChange,

@@ -133,9 +133,9 @@ export default {
       const res = yield call(getDriverList, value);
       if (res.code == 0) {
         yield put({ type: 'setLoading', payload: false });
-        if (res.data && res.data.lists.length) {
-          yield put({ type: 'setDriverList', payload: res.data });
-        }
+        yield put({ type: 'setDriverList', payload: res.data });
+      } else {
+        message.warning(res.msg || '系统错误');
       }
     },
 
