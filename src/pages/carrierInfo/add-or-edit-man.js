@@ -355,7 +355,7 @@ const AddOrEditMan = props => {
   useImperativeHandle(props.onRef, () => {
     return {
       setAdd: value => {
-        closeModal();
+        // closeModal();
         setIsaddOrEditManFlag(true);
         setCarrier_uin(value.carrier_uin);
       },
@@ -450,23 +450,20 @@ const AddOrEditMan = props => {
                   thumbUrl: driver_lic_pic_text,
                 },
               ],
+              driverPicListShowBack: driver_lic_side_pic_text
+                ? [
+                    {
+                      uid: new Date().getTime(),
+                      name: props.title,
+                      status: 'done',
+                      url: driver_lic_side_pic_text,
+                      media_path_source: driver_lic_side_pic,
+                      thumbUrl: driver_lic_side_pic_text,
+                    },
+                  ]
+                : [],
             });
-            if (driver_lic_side_pic_text) {
-              setDriverIdSubmitData({
-                ...driverIdSubmitData,
-                ...res.data,
-                driverPicListShowBack: [
-                  {
-                    uid: new Date().getTime(),
-                    name: props.title,
-                    status: 'done',
-                    url: driver_lic_side_pic_text,
-                    media_path_source: driver_lic_side_pic,
-                    thumbUrl: driver_lic_side_pic_text,
-                  },
-                ],
-              });
-            }
+
             form.setFieldsValue({
               real_name: driver_name,
               mobile: driver_mobile,
@@ -480,8 +477,6 @@ const AddOrEditMan = props => {
             driverForm.setFieldsValue({
               driver_name,
               vehicle_class,
-              driver_lic_pic,
-              driver_lic_side_pic,
               driver_issuing_organizations, //驾驶证发证机关
               valid_period_from: Boolean(valid_period_from * 1)
                 ? moment(formatDateYMD(valid_period_from), 'YYYY-MM-DD')

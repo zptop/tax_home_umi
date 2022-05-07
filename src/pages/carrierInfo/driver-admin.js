@@ -58,7 +58,6 @@ const mapDispatchToProps = dispatch => {
 
 const DriverAdmin = props => {
   let { loading, totalNum, driverList } = props;
-  console.log('driverList:', driverList);
   const location = useLocation();
   const ChildAddOrEditRef = React.createRef();
   const dataRef = useRef('');
