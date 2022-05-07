@@ -166,7 +166,7 @@ var _default = {
                 res = _context2.sent;
 
                 if (!(res.code == 0)) {
-                  _context2.next = 15;
+                  _context2.next = 14;
                   break;
                 }
 
@@ -177,25 +177,20 @@ var _default = {
                 });
 
               case 10:
-                if (!(res.data && res.data.lists.length)) {
-                  _context2.next = 13;
-                  break;
-                }
-
-                _context2.next = 13;
+                _context2.next = 12;
                 return put({
                   type: '_' + value.flag,
                   payload: res.data,
                 });
 
-              case 13:
-                _context2.next = 16;
+              case 12:
+                _context2.next = 15;
                 break;
 
-              case 15:
+              case 14:
                 _antd.message.warning(res.msg || '系统错误');
 
-              case 16:
+              case 15:
               case 'end':
                 return _context2.stop();
             }

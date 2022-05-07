@@ -59,7 +59,7 @@ const CarrierInfo = () => {
   //打开--添加车老板弹框---新增
   const openAddOrEditManModal = () => {
     setTitle('新增车队老板');
-    ChildAddOrEditRef.current.setAdd();
+    ChildAddOrEditRef.current.setAdd({ carrier_uin: '' });
   };
 
   //选择单号
@@ -152,7 +152,11 @@ const CarrierInfo = () => {
           }}
         >
           <Col span={4} style={{ display: 'flex', alignItems: 'flex-start' }}>
-            <Select onChange={selectedNo}>
+            <Select
+              onChange={selectedNo}
+              defaultValue="0"
+              style={{ width: '130px' }}
+            >
               <Select.Option value="0">承运人名称</Select.Option>
               <Select.Option value="1">承运人手机</Select.Option>
               <Select.Option value="2">司机姓名</Select.Option>
@@ -167,9 +171,9 @@ const CarrierInfo = () => {
             <Form.Item name="audit_status" label="承运人认证状态">
               <Select>
                 <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="1">审核中</Select.Option>
-                <Select.Option value="2">审核通过</Select.Option>
-                <Select.Option value="3">审核不通过</Select.Option>
+                <Select.Option value="0">审核中</Select.Option>
+                <Select.Option value="1">审核通过</Select.Option>
+                <Select.Option value="2">审核不通过</Select.Option>
               </Select>
             </Form.Item>
           </Col>
@@ -177,9 +181,9 @@ const CarrierInfo = () => {
             <Form.Item name="driver_status" label="司机认证状态">
               <Select>
                 <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="1">审核中</Select.Option>
-                <Select.Option value="2">审核通过</Select.Option>
-                <Select.Option value="3">审核不通过</Select.Option>
+                <Select.Option value="0">审核中</Select.Option>
+                <Select.Option value="1">审核通过</Select.Option>
+                <Select.Option value="2">审核不通过</Select.Option>
               </Select>
             </Form.Item>
           </Col>
@@ -187,9 +191,9 @@ const CarrierInfo = () => {
             <Form.Item name="vehicle_status" label="车辆认证状态">
               <Select>
                 <Select.Option value="200">全部</Select.Option>
-                <Select.Option value="1">审核中</Select.Option>
-                <Select.Option value="2">审核通过</Select.Option>
-                <Select.Option value="3">审核不通过</Select.Option>
+                <Select.Option value="0">审核中</Select.Option>
+                <Select.Option value="1">审核通过</Select.Option>
+                <Select.Option value="2">审核不通过</Select.Option>
               </Select>
             </Form.Item>
           </Col>

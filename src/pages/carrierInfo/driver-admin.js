@@ -23,12 +23,6 @@ import {
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { useLocation } from 'umi';
-import {
-  formatDateYMD,
-  formatSelectedOptions,
-  accDiv,
-  timeCutdown,
-} from '../../util/tools';
 import DeatilMan from './detail-man';
 import AddOrEditMan from './add-or-edit-man';
 import List from './list';
@@ -66,13 +60,11 @@ const DriverAdmin = props => {
   let { loading, totalNum, driverList } = props;
   console.log('driverList:', driverList);
   const location = useLocation();
-  const ChildRef = React.createRef();
   const ChildAddOrEditRef = React.createRef();
   const dataRef = useRef('');
   const [form] = Form.useForm();
   const [placeholderInput, setPlaceholderInput] = useState('请输入司机姓名');
   const [title, setTitle] = useState('新增司机');
-  const [carrier_uin, setCarrier_uin] = useState('');
   const [cd_id, setCd_id] = useState('');
   //抽屉开关-承运人详情
   const [visibleDrawer, setVisibleDrawer] = useState(false);
