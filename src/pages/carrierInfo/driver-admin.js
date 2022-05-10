@@ -7,14 +7,11 @@ import {
   Select,
   Form,
   Input,
-  message,
-  DatePicker,
   Modal,
   Dropdown,
   Menu,
   Tooltip,
   Drawer,
-  Tabs,
 } from 'antd';
 const { confirm } = Modal;
 import {
@@ -25,7 +22,6 @@ import {
 import { useLocation } from 'umi';
 import DeatilMan from './detail-man';
 import AddOrEditMan from './add-or-edit-man';
-import List from './list';
 import styles from './index.less';
 import { connect } from 'dva';
 const namespace = 'carrierInfo';

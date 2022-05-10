@@ -10,6 +10,11 @@ import {
   editCarrier,
   addDriver,
   editDriver,
+  addVehicle,
+  getVehicleList,
+  getVehicleInfo,
+  editVehicle,
+  delOrRejectVehicle,
 } from '../sevice/carrierInfo';
 import { scanIdCard } from '../util/ocr';
 export default {
@@ -18,6 +23,7 @@ export default {
     c_getCarrierList: [], //承运人列表(全部)
     c_getWaitCarrierList: [], //承运人列表(待处理)
     driverList: [], //司机列表
+    vehicleList: [], //车辆列表
     loading: false, //列表加载状态
     totalNum: 0, //总条数,
   },
@@ -58,6 +64,16 @@ export default {
       return {
         ...state,
         driverList: lists,
+        totalNum,
+      };
+    },
+    setVehicleList(state, action) {
+      let {
+        payload: { lists, totalNum },
+      } = action;
+      return {
+        ...state,
+        vehicleList: lists,
         totalNum,
       };
     },
@@ -137,9 +153,39 @@ export default {
       }
     },
 
-    //获取司机详情
+    //司机详情
     *getDriverInfoModel({ value }, { call, put }) {
       const res = yield call(getDriverInfo, value);
+      return res;
+    },
+
+    //新增车辆
+    *addVehicleModel({ value }, { call, put }) {
+      const res = yield call(addVehicle, value);
+      return res;
+    },
+
+    //编辑车辆
+    *editVehicleModel({ value }, { call, put }) {
+      const res = yield call(editVehicle, value);
+      return res;
+    },
+
+    //车辆列表
+    *getVehicleListModel({ value }, { call, put }) {
+      yield put({ type: 'setLoading', payload: true });
+      const res = yield call(getVehicleList, value);
+      if (res.code == 0) {
+        yield put({ type: 'setLoading', payload: false });
+        yield put({ type: 'setVehicleList', payload: res.data });
+      } else {
+        message.warning(res.msg || '系统错误');
+      }
+    },
+
+    //车辆详情
+    *getVehicleInfoModel({ value }, { call, put }) {
+      const res = yield call(getVehicleInfo, value);
       return res;
     },
 
